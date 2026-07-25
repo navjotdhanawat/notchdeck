@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ClaudeNotch v2 — The Vision (act-in-place)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     ClaudeNotch v2 — VISION preview (proposed, not built).
+     Direction from the user's reference mockups, refined into one
+     accent-per-state system. Notch/panel content uses the real
+     macOS system font → authentic SF Pro + Apple Color Emoji.
+     ============================================================ */
+  :root{
+    --bg:#08080a; --bg-2:#101014;
+    --ink:#ECEAE4; --muted:#8b8b93; --faint:#565660;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.05);
+    --accent:#D97757;                                   /* Claude terracotta */
+
+    /* accent-per-state system */
+    --st-working:#0A84FF; --st-done:#30D158; --st-perm:#FF9F0A;
+    --st-ask:#5AC8FA;     --st-plan:#A78BFA; --st-fail:#FF453A;
+
+    /* per-agent */
+    --ag-claude:#E39178; --ag-codex:#5FD0B0; --ag-gemini:#8FB0F9;
+
+    --mac:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+    --code:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+    --serif:"Instrument Serif",ui-serif,Georgia,serif;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    --panel:#0a0a0c;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family:var(--mono);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(1200px 720px at 50% -10%, rgba(167,139,250,.10), transparent 60%),
+      radial-gradient(900px 600px at 90% 2%, rgba(217,119,87,.08), transparent 55%),
+      radial-gradient(circle at center, rgba(255,255,255,.020) .9px, transparent 1px);
+    background-size:auto,auto,26px 26px; background-attachment:fixed;
+  }
+  body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:60;
+    background:linear-gradient(rgba(255,255,255,.014) 1px, transparent 1px) 0 0/100% 3px,
+      radial-gradient(120% 90% at 50% 0%, transparent 62%, rgba(0,0,0,.5) 100%);
+    mix-blend-mode:soft-light; opacity:.5}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 26px 110px}
+
+  /* ---------- top nav ---------- */
+  .topnav{display:flex; align-items:center; justify-content:space-between; padding:22px 0 0; font-family:var(--mono); font-size:11.5px}
+  .topnav a{color:var(--muted); text-decoration:none; border:1px solid var(--line); padding:7px 13px; border-radius:999px; transition:.18s}
+  .topnav a:hover{color:var(--ink); border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.03)}
+  .topnav .here{color:var(--accent)}
+
+  /* ---------- masthead ---------- */
+  header.masthead{padding:44px 0 30px; border-bottom:1px solid var(--line)}
+  .kicker{font-family:var(--mono); font-size:11px; letter-spacing:.42em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:12px}
+  .kicker::before{content:""; width:30px; height:1px; background:var(--accent)}
+  h1{font-family:var(--serif); font-weight:400; font-size:clamp(50px,8.6vw,108px); line-height:.9; margin:16px 0 0; letter-spacing:-.01em}
+  h1 em{font-style:italic; color:var(--accent)}
+  h1 .v{font-family:var(--mono); font-size:.16em; vertical-align:middle; color:var(--muted); letter-spacing:.1em; margin-left:.4em; border:1px solid var(--line); padding:.5em .8em; border-radius:8px}
+  .sub{margin-top:20px; max-width:680px; color:var(--muted); font-size:13.5px; line-height:1.75}
+  .sub b{color:var(--ink); font-weight:500}
+  .banner{margin-top:22px; display:flex; gap:12px; align-items:flex-start; border:1px solid rgba(167,139,250,.25); background:rgba(167,139,250,.06); border-radius:12px; padding:13px 16px; font-size:12px; line-height:1.65; color:var(--muted)}
+  .banner b{color:var(--ink); font-weight:500}
+  .banner .pill{font-family:var(--mono); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; color:#c9b8f5; border:1px solid rgba(167,139,250,.4); border-radius:6px; padding:3px 8px; white-space:nowrap; margin-top:1px}
+
+  /* ---------- sections ---------- */
+  section{padding-top:66px}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:26px}
+  .sec-num{font-family:var(--mono); font-size:11px; color:var(--accent); letter-spacing:.2em}
+  .sec-title{font-family:var(--serif); font-size:36px; line-height:1; font-weight:400}
+  .sec-note{margin-left:auto; color:var(--faint); font-size:11px; max-width:360px; text-align:right; line-height:1.6}
+
+  /* ============================================================
+     macOS stage (wallpaper + menubar + notch panel + terminal peek)
+     ============================================================ */
+  .stage{position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--line); font-family:var(--mac);
+    box-shadow:0 34px 80px -32px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.05);
+    /* Monterey-ish warm wallpaper */
+    background:
+      radial-gradient(120% 90% at 78% 12%, rgba(242,176,122,.9) 0%, transparent 42%),
+      radial-gradient(90% 80% at 62% 42%, rgba(224,121,92,.8) 0%, transparent 52%),
+      radial-gradient(80% 70% at 20% 80%, rgba(120,90,190,.55) 0%, transparent 55%),
+      linear-gradient(158deg, #2b2350 0%, #5a3570 34%, #a24d63 66%, #dd8a5c 100%);}
+  .stage.hero{min-height:470px}
+  .stage.mini{min-height:330px}
+
+  .menubar{position:absolute; top:0; left:0; right:0; height:32px; z-index:6; display:flex; align-items:center; justify-content:space-between; padding:0 13px;
+    background:linear-gradient(rgba(0,0,0,.30),rgba(0,0,0,.10)); backdrop-filter:blur(10px) saturate(150%); -webkit-backdrop-filter:blur(10px) saturate(150%);
+    font-size:12.5px; color:rgba(255,255,255,.9)}
+  .mb-left{display:flex; align-items:center; gap:15px}
+  .mb-left .logo{font-size:13.5px}
+  .mb-left .app{font-weight:600}
+  .mb-left .mn{color:rgba(255,255,255,.7); font-weight:400}
+  .mb-right{display:flex; align-items:center; gap:13px}
+  .mb-right svg{display:block; opacity:.95}
+  .mb-right .clock{font-variant-numeric:tabular-nums}
+  .mb-item{font-size:15px; line-height:1}
+
+  .cam{position:absolute; top:11px; left:50%; transform:translateX(-50%); width:6px; height:6px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #26324d, #000 70%); box-shadow:0 0 0 1px rgba(255,255,255,.05); z-index:9}
+  .notch-nub{position:absolute; top:0; left:50%; transform:translateX(-50%); width:150px; height:32px; background:#000; border-radius:0 0 10px 10px; z-index:7}
+
+  /* terminal window peeking from the bottom */
+  .term{position:absolute; left:6%; right:6%; bottom:0; top:66%; z-index:4; background:#0c0c0f; border:1px solid rgba(255,255,255,.08); border-bottom:none; border-radius:11px 11px 0 0; box-shadow:0 -8px 30px rgba(0,0,0,.4); overflow:hidden; font-family:var(--code)}
+  .term .tbar{height:28px; display:flex; align-items:center; gap:7px; padding:0 12px; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.06)}
+  .tl{width:11px; height:11px; border-radius:50%}
+  .tl.r{background:#ff5f57}.tl.y{background:#febc2e}.tl.g{background:#28c840}
+  .term .ttitle{margin-left:8px; color:rgba(255,255,255,.5); font-size:11.5px}
+  .term .tbody{padding:11px 14px; font-size:11.5px; color:rgba(255,255,255,.62); line-height:1.7}
+  .term .tbody .gp{color:#43c463}
+  .term .tbody .dim{color:rgba(255,255,255,.34)}
+
+  /* ============================================================
+     THE NOTCH PANEL (v2)
+     ============================================================ */
+  .panel{position:absolute; top:0; left:50%; transform:translateX(-50%); z-index:8; width:406px; background:var(--panel);
+    border-radius:0 0 26px 26px; padding:30px 0 0; box-shadow:0 28px 55px -14px rgba(0,0,0,.8), 0 0 0 .5px rgba(255,255,255,.06)}
+  .panel.narrow{width:372px}
+  .panel-in{padding:12px 14px 16px}
+
+  /* --- usage header --- */
+  .usage{display:flex; align-items:center; gap:16px; padding:8px 14px 11px; border-bottom:1px solid rgba(255,255,255,.07); font-family:var(--mac)}
+  .usage .spark{color:#ffd479; font-size:13px; filter:drop-shadow(0 0 6px rgba(255,212,121,.4))}
+  .uwin{display:flex; align-items:center; gap:7px}
+  .uwin .w{color:rgba(255,255,255,.45); font-size:11.5px; font-variant-numeric:tabular-nums}
+  .uwin .p{color:#fff; font-size:12.5px; font-weight:600; font-variant-numeric:tabular-nums}
+  .uwin .t{color:rgba(255,255,255,.42); font-size:11px; font-variant-numeric:tabular-nums}
+  .ubar{width:38px; height:3px; border-radius:2px; background:rgba(255,255,255,.14); overflow:hidden}
+  .ubar i{display:block; height:100%; border-radius:2px; background:linear-gradient(90deg,#ffd479,#ff9f0a)}
+  .usage .cost{margin-left:auto; color:rgba(255,255,255,.5); font-size:11px; font-variant-numeric:tabular-nums}
+  .usage .cost b{color:rgba(255,255,255,.85); font-weight:600}
+
+  /* --- session rows --- */
+  .frow{display:flex; align-items:flex-start; gap:11px; padding:9px 8px; border-radius:12px; cursor:default; transition:background .16s ease}
+  .frow:hover{background:rgba(255,255,255,.055)}
+  .frow.compact{align-items:center}
+  .avatar{width:36px; height:36px; border-radius:11px; flex:0 0 auto; display:grid; place-items:center; color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+  .avatar.working{background:linear-gradient(150deg,#3a6ff0,#7b52e0)}
+  .avatar.done{background:linear-gradient(150deg,#2bb457,#3ad17e)}
+  .avatar .bot{width:22px; height:22px}
+  .sdot{width:9px; height:9px; border-radius:50%; flex:0 0 auto; margin:0 13px 0 14px}
+  .sdot.blue{background:var(--st-working); box-shadow:0 0 8px rgba(10,132,255,.6)}
+  .sdot.green{background:var(--st-done); box-shadow:0 0 8px rgba(48,209,88,.5)}
+  .sdot.amber{background:var(--st-perm); box-shadow:0 0 8px rgba(255,159,10,.55)}
+  .sdot.teal{background:var(--st-ask); box-shadow:0 0 8px rgba(90,200,250,.55)}
+  .sdot.red{background:var(--st-fail); box-shadow:0 0 8px rgba(255,69,58,.5)}
+
+  .fmain{min-width:0; flex:1}
+  .ftitle{color:#fff; font-size:15px; font-weight:600; letter-spacing:.1px; line-height:1.25}
+  .ftitle.sm{font-size:13.5px; font-weight:500}
+  .fyou{color:rgba(255,255,255,.5); font-size:12px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .factivity{font-size:12px; margin-top:3px; font-weight:500}
+  .factivity.working{color:#5aa2ff}
+  .factivity.done{color:#4bd07f}
+  .factivity.perm{color:#ffbf5a}
+  .factivity.ask{color:#7bd6fb}
+  .factivity.fail{color:#ff7a70}
+  .fside{display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex:0 0 auto}
+  .frow.compact .fside{flex-direction:row; align-items:center; gap:9px}
+  .badges{display:flex; gap:6px}
+  .badge{font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:6px; background:rgba(255,255,255,.08); color:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.07); white-space:nowrap}
+  .badge.claude{color:var(--ag-claude); background:rgba(217,119,87,.14); border-color:rgba(217,119,87,.26)}
+  .badge.codex{color:var(--ag-codex); background:rgba(16,185,129,.13); border-color:rgba(16,185,129,.24)}
+  .badge.gemini{color:var(--ag-gemini); background:rgba(120,150,240,.15); border-color:rgba(120,150,240,.26)}
+  .ftime{color:rgba(255,255,255,.4); font-size:11px; font-variant-numeric:tabular-nums; font-family:var(--mono)}
+
+  /* --- act-in-place: shared --- */
+  .paneltop{display:flex; align-items:center; gap:8px; font-family:var(--mac); font-size:13px; font-weight:600; color:#fff; padding:2px 2px 10px}
+  .paneltop .d{width:8px; height:8px; border-radius:50%}
+  .paneltop.perm{color:#ffcf8f}   .paneltop.perm .d{background:var(--st-perm); box-shadow:0 0 8px rgba(255,159,10,.6)}
+  .paneltop.ask{color:#a9e4fd}    .paneltop.ask .d{background:var(--st-ask); box-shadow:0 0 8px rgba(90,200,250,.6)}
+  .paneltop.plan{color:#cbb8fb}   .paneltop.plan .d{background:var(--st-plan); box-shadow:0 0 8px rgba(167,139,250,.6)}
+
+  .permhead{display:flex; align-items:center; gap:8px; font-family:var(--mac); font-size:13px; margin:2px 2px 11px}
+  .permhead .warn{color:var(--st-perm)}
+  .permhead .tool{color:rgba(255,255,255,.55)}
+  .permhead .file{color:#fff; font-family:var(--code); font-size:12.5px}
+
+  .diff{background:#000; border:1px solid rgba(255,255,255,.08); border-radius:11px; overflow:hidden; font-family:var(--code); font-size:12px}
+  .dl{display:flex; gap:12px; padding:2.5px 12px; line-height:1.55; white-space:pre}
+  .dl .ln{width:16px; text-align:right; color:rgba(255,255,255,.28); flex:0 0 auto; user-select:none}
+  .dl.ctx .code{color:rgba(255,255,255,.62)}
+  .dl.del{background:rgba(255,69,58,.11)} .dl.del .code{color:#ff8a80}
+  .dl.add{background:rgba(48,209,88,.11)} .dl.add .code{color:#7ee29a}
+  .diffstat{padding:6px 12px; border-top:1px solid rgba(255,255,255,.06); font-family:var(--code); font-size:11px; display:flex; gap:10px}
+  .diffstat .plus{color:#4bd07f}.diffstat .minus{color:#ff7a70}
+
+  .btns{display:flex; gap:9px; margin-top:13px}
+  .btn{flex:1; text-align:center; font-family:var(--mac); font-size:13px; font-weight:500; padding:10px 12px; border-radius:11px; border:1px solid transparent; cursor:default; transition:transform .12s ease, filter .12s ease; display:flex; align-items:center; justify-content:center; gap:8px}
+  .btn:hover{transform:translateY(-1px)}
+  .btn .kbd{font-family:var(--mono); font-size:10.5px; opacity:.55}
+  .btn.ghost{background:rgba(255,255,255,.09); color:#fff; border-color:rgba(255,255,255,.08)}
+  .btn.primary{background:#f2f2f4; color:#111}
+  .btn.primary.indigo{background:linear-gradient(180deg,#9d84f0,#7d5fe6); color:#fff}
+  .btn.primary.green{background:linear-gradient(180deg,#43d17f,#2bb45f); color:#0a2417}
+
+  /* --- session-context strip (project · agent · terminal) on decision cards --- */
+  .ctxstrip{display:flex; align-items:center; gap:7px; padding:0 2px 11px; font-family:var(--mac); font-size:11.5px}
+  .ctxstrip .ctxproj{color:rgba(255,255,255,.58); font-weight:500}
+  /* --- shared card footer: "Answer in terminal" escape hatch --- */
+  .cardfoot{display:flex; align-items:center; justify-content:space-between; margin-top:12px; padding-top:11px; border-top:1px solid rgba(255,255,255,.06)}
+  .cardfoot .ait{font-family:var(--mac); font-size:11.5px; color:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.09); background:rgba(255,255,255,.05); border-radius:8px; padding:6px 10px; cursor:default; transition:.15s}
+  .cardfoot .ait:hover{color:#fff; background:rgba(255,255,255,.09)}
+  /* --- honest usage header (tokens + cost across active sessions) --- */
+  .usage .ulabel{color:rgba(255,255,255,.5); font-size:12px; font-family:var(--mac)}
+
+  /* --- ask options --- */
+  .askq{font-family:var(--mac); font-size:14px; color:#fff; font-weight:500; margin:2px 2px 11px}
+  .opts{display:flex; flex-direction:column; gap:8px}
+  .opt{display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px; font-family:var(--mac); font-size:13px; color:#fff;
+    background:rgba(90,200,250,.09); border:1px solid rgba(90,200,250,.20); transition:.15s}
+  .opt:hover{background:rgba(90,200,250,.17); border-color:rgba(90,200,250,.4)}
+  .opt .kc{font-family:var(--mono); font-size:11px; color:#a9e4fd; background:rgba(0,0,0,.35); border:1px solid rgba(90,200,250,.25); border-radius:6px; padding:3px 0; min-width:22px; text-align:center; flex:0 0 auto}
+
+  /* --- plan steps --- */
+  .plansteps{position:relative; display:flex; flex-direction:column; gap:8px; font-family:var(--mac); padding:2px 2px 4px; max-height:150px; overflow:hidden}
+  .pstep{display:flex; gap:11px; font-size:12.5px; color:rgba(255,255,255,.86)}
+  .pstep .pn{font-family:var(--mono); font-size:11px; color:var(--st-plan); flex:0 0 auto; width:14px}
+  .planfade{position:absolute; left:0; right:0; bottom:0; height:38px; background:linear-gradient(transparent,var(--panel))}
+  .planmore{font-family:var(--mono); font-size:11px; color:rgba(167,139,250,.8); padding:4px 2px 0}
+
+  /* ---------- caption ---------- */
+  .cap{margin-top:15px}
+  .cap .t{font-family:var(--mono); font-size:12.5px; color:var(--ink); font-weight:500; display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+  .tag{font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); border:1px solid var(--line); border-radius:5px; padding:2px 6px}
+  .cap .d{font-size:11.5px; color:var(--muted); line-height:1.68; margin-top:8px; max-width:640px}
+  .cap .d b{color:var(--ink); font-weight:500}
+  .k{font-family:var(--mono); color:var(--ink); background:rgba(255,255,255,.06); padding:1px 6px; border-radius:5px; font-size:11px}
+
+  /* ---------- grids ---------- */
+  .trio{display:grid; grid-template-columns:repeat(3,1fr); gap:22px}
+  .life{display:grid; grid-template-columns:repeat(5,1fr); gap:14px}
+  .darkcard{background:linear-gradient(180deg,#131316,#0c0c0f); border:1px solid var(--line); border-radius:14px; padding:13px; font-family:var(--mac)}
+  .lifelabel{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); margin-top:11px; text-align:center}
+  .lifelabel b{color:var(--muted); font-weight:400; display:block; margin-top:3px; letter-spacing:0; text-transform:none; font-size:11px}
+
+  /* multi-agent chips */
+  .matrix{display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start}
+  .agentrows{display:flex; flex-direction:column; gap:10px}
+  .arow{display:flex; align-items:center; gap:11px; background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:12px; padding:11px 13px; font-family:var(--mac)}
+  .chipwrap{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+  .chip{font-family:var(--mono); font-size:11px; color:var(--muted); border:1px solid var(--line); border-radius:8px; padding:6px 11px; background:rgba(255,255,255,.02)}
+  .chip.on{color:var(--ink)} .chip.soon{color:var(--faint); border-style:dashed}
+  .legend-inline{font-family:var(--mono); font-size:10.5px; color:var(--faint); margin-top:14px; line-height:1.8}
+
+  /* roadmap */
+  .road{display:grid; grid-template-columns:repeat(3,1fr); gap:22px}
+  .roadcard{background:linear-gradient(180deg,#131316,#0b0b0e); border:1px solid var(--line); border-radius:16px; padding:20px; position:relative; overflow:hidden}
+  .roadcard h3{font-family:var(--serif); font-weight:400; font-size:24px; margin:0 0 6px}
+  .roadcard p{font-size:11.5px; color:var(--muted); line-height:1.65; margin:0}
+  .roadcard .soon{position:absolute; top:14px; right:14px; font-family:var(--mono); font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); border:1px dashed var(--line); border-radius:5px; padding:3px 7px}
+  .phone{margin-top:16px; width:112px; height:74px; border-radius:16px; border:2px solid rgba(255,255,255,.16); background:linear-gradient(160deg,#241d3f,#5a3161); position:relative; overflow:hidden; margin-inline:auto}
+  .phone .pnotch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:52px; height:14px; background:#000; border-radius:0 0 8px 8px; display:flex; align-items:center; justify-content:center; gap:3px; font-size:8px; color:#fff}
+  .sshrow{margin-top:16px; display:flex; align-items:center; gap:9px; background:#0b0b0e; border:1px solid var(--line); border-radius:11px; padding:10px 12px; font-family:var(--mac)}
+
+  footer{margin-top:84px; padding-top:26px; border-top:1px solid var(--line); color:var(--faint); font-size:11.5px; line-height:1.9}
+  footer b{color:var(--muted); font-weight:400}
+  footer .k{color:var(--ink)}
+
+  @media (max-width:900px){.trio,.road{grid-template-columns:1fr}.life{grid-template-columns:1fr 1fr}.matrix{grid-template-columns:1fr}.sec-note{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="topnav">
+    <span class="here">● v2 · vision</span>
+    <a href="./claudenotch-ui-preview.html">v1 states (shipping) →</a>
+  </nav>
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="kicker">Act-in-place &amp; beyond</div>
+    <h1>Claude<em>Notch</em><span class="v">v2 · proposed</span></h1>
+    <p class="sub">
+      Where v1 lets you <b>glance &amp; jump</b>, v2 lets you <b>decide without leaving the notch</b>:
+      approve a tool, answer a question, sign off a plan — while it also tracks usage, spans
+      multiple agents &amp; terminals, and reaches remote/mobile.
+    </p>
+    <div class="banner">
+      <span class="pill">visual target</span>
+      <div>The <b>behaviors</b> here already ship — act-in-place (permission + plan), AskUserQuestion answer-in-place,
+      the rich glance, and multi-agent/terminal are all merged to <span class="k">main</span>. What this page now shows is the
+      <b>visual polish target</b>: one accent-per-state system, session-context strips, numbered index chips, per-agent
+      badge tint, and an honest tokens/cost header. <b>Honesty fences:</b> the panel is click-only, so number chips are a
+      visual index (<i>not</i> keyboard shortcuts), and rate-limit windows aren't shown until there's a real data source.</div>
+    </div>
+  </header>
+
+  <!-- ============ 00 · THE RICH GLANCE ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">00</span><span class="sec-title">The rich glance</span>
+      <span class="sec-note">Usage on top, then one line per session — agent, terminal, elapsed, and what it's doing right now.</span>
+    </div>
+
+    <div class="stage hero">
+      <div class="menubar">
+        <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span><span class="mn">Edit</span><span class="mn">View</span><span class="mn">Window</span><span class="mn">Help</span></div>
+        <div class="mb-right">
+          <svg width="17" height="13" viewBox="0 0 17 13" fill="none"><path d="M8.5 11.5l2.2-2.4a3.1 3.1 0 00-4.4 0l2.2 2.4zM4.3 6.9a6 6 0 018.4 0M1.8 4.2a9.6 9.6 0 0113.4 0" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="2.5" width="21" height="8" rx="2.2" stroke="#fff" stroke-opacity=".55" stroke-width="1"/><rect x="2.6" y="4" width="15" height="5" rx="1" fill="#fff"/><rect x="23.2" y="4.7" width="1.6" height="3.6" rx=".8" fill="#fff" fill-opacity=".6"/></svg>
+          <span class="mb-item">◗</span><span class="clock">Wed 22 Jul&nbsp;&nbsp;9:41 AM</span>
+        </div>
+      </div>
+      <div class="cam"></div>
+
+      <div class="panel">
+        <!-- usage -->
+        <div class="usage">
+          <span class="spark">✦</span>
+          <span class="ulabel">3 active sessions</span>
+          <span class="cost">1.2M tok · <b>$2.14</b></span>
+        </div>
+        <div class="panel-in">
+          <!-- primary rich row -->
+          <div class="frow working">
+            <div class="avatar working"><svg class="bot" viewBox="0 0 24 24" fill="none"><path d="M12 3.4v2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="2.7" r="1.15" fill="currentColor"/><rect x="5" y="5.6" width="14" height="11" rx="3.6" fill="currentColor" opacity=".22"/><rect x="5" y="5.6" width="14" height="11" rx="3.6" stroke="currentColor" stroke-width="1.5"/><circle cx="9.6" cy="11.1" r="1.5" fill="currentColor"/><circle cx="14.4" cy="11.1" r="1.5" fill="currentColor"/></svg></div>
+            <div class="fmain">
+              <div class="ftitle">fix auth bug</div>
+              <div class="factivity working">Writing middleware.ts…</div>
+            </div>
+            <div class="fside"><div class="badges"><span class="badge claude">Claude</span><span class="badge">iTerm</span></div><span class="ftime">27m</span></div>
+          </div>
+          <!-- compact rows -->
+          <div class="frow compact working">
+            <span class="sdot blue"></span><span class="ftitle sm fmain">backend server</span>
+            <div class="fside"><span class="badge codex">Codex</span><span class="badge">Terminal</span><span class="ftime">1h</span></div>
+          </div>
+          <div class="frow compact done">
+            <span class="sdot green"></span><span class="ftitle sm fmain">optimize queries</span>
+            <div class="fside"><span class="badge gemini">Gemini</span><span class="badge">Ghostty</span><span class="ftime">5h</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- terminal peek -->
+      <div class="term">
+        <div class="tbar"><span class="tl r"></span><span class="tl y"></span><span class="tl g"></span><span class="ttitle">claude — fix-auth-bug</span></div>
+        <div class="tbody"><span class="gp">●</span> Let me look at the auth module.<br><span class="dim">&nbsp;&nbsp;Searching for 6 patterns… (ctrl+o to expand)</span></div>
+      </div>
+    </div>
+
+    <div class="cap">
+      <div class="t">Anatomy of a row <span class="tag">rich glance</span></div>
+      <div class="d"><b>Avatar/dot</b> = live state · <b>title</b> = task or branch · <b>activity line</b> = what it's doing now (blue while working, green when done) · <b>badges</b> = agent + terminal · <b>time</b> = elapsed. The top strip aggregates <b>total tokens &amp; cost across active sessions</b>, from the transcript usage we already track. (Rate-limit windows need a data source we don't have yet — a later increment, not shown.)</div>
+    </div>
+  </section>
+
+  <!-- ============ 01 · ACT IN PLACE ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span><span class="sec-title">Act in place</span>
+      <span class="sec-note">The headline. When a session blocks, the notch becomes the decision surface — no jumping to the terminal to type y/n.</span>
+    </div>
+
+    <div class="trio">
+
+      <!-- Permission -->
+      <div>
+        <div class="stage mini">
+          <div class="menubar"><div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span></div><div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41</span></div></div>
+          <div class="notch-nub"></div><div class="cam"></div>
+          <div class="panel narrow">
+            <div class="panel-in">
+              <div class="paneltop perm"><span class="d"></span> Permission</div>
+              <div class="ctxstrip"><span class="ctxproj">fix-auth-bug</span><span class="badge claude">Claude</span><span class="badge">iTerm</span></div>
+              <div class="permhead"><span class="warn">⚠</span><span class="tool">Edit</span><span class="file">src/auth/middleware.ts</span></div>
+              <div class="diff">
+                <div class="dl ctx"><span class="ln">12</span><span class="code">const verify = (token) =&gt;</span></div>
+                <div class="dl del"><span class="ln">13</span><span class="code">- jwt.verify(token);</span></div>
+                <div class="dl add"><span class="ln">13</span><span class="code">+ if (!token) throw new</span></div>
+                <div class="dl add"><span class="ln"></span><span class="code">    AuthError('missing');</span></div>
+                <div class="dl add"><span class="ln">14</span><span class="code">+ return jwt.verify(token);</span></div>
+                <div class="diffstat"><span class="plus">+3</span><span class="minus">-1</span></div>
+              </div>
+              <div class="btns"><div class="btn ghost">Deny</div><div class="btn primary">Allow</div></div>
+              <div class="btns" style="margin-top:8px"><div class="btn ghost">Allow for this session</div></div>
+              <div class="cardfoot"><span class="ait">Answer in terminal</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap"><div class="t">Permission Request <span class="tag">amber</span></div>
+          <div class="d">See the exact <b>tool + diff</b> and <b>Deny / Allow</b> with a click, plus <b>Allow for this session</b>. A session-context strip (project · agent · terminal) shows who's asking. Requires the <span class="k">PreToolUse</span>/<span class="k">PermissionRequest</span> hook to run synchronously.</div></div>
+      </div>
+
+      <!-- Ask -->
+      <div>
+        <div class="stage mini">
+          <div class="menubar"><div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span></div><div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41</span></div></div>
+          <div class="notch-nub"></div><div class="cam"></div>
+          <div class="panel narrow">
+            <div class="panel-in">
+              <div class="paneltop ask"><span class="d"></span> Claude asks</div>
+              <div class="ctxstrip"><span class="ctxproj">fix-auth-bug</span><span class="badge claude">Claude</span><span class="badge">iTerm</span></div>
+              <div class="askq">Which deployment target?</div>
+              <div class="opts">
+                <div class="opt"><span class="kc">1</span> Production</div>
+                <div class="opt"><span class="kc">2</span> Staging</div>
+                <div class="opt"><span class="kc">3</span> Local only</div>
+              </div>
+              <div class="cardfoot"><span class="ait">Answer in terminal</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap"><div class="t">Claude asks <span class="tag">teal</span></div>
+          <div class="d">Answers an <b>AskUserQuestion</b> right here — each option is a <b>numbered, clickable row</b> (the number is a visual index, not a keyboard shortcut: the panel is click-only). The choice is written back to the waiting session. Great for multiple-choice branches mid-run.</div></div>
+      </div>
+
+      <!-- Plan -->
+      <div>
+        <div class="stage mini">
+          <div class="menubar"><div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span></div><div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41</span></div></div>
+          <div class="notch-nub"></div><div class="cam"></div>
+          <div class="panel narrow">
+            <div class="panel-in">
+              <div class="paneltop plan"><span class="d"></span> Plan ready</div>
+              <div class="ctxstrip"><span class="ctxproj">deploy-api</span><span class="badge claude">Claude</span><span class="badge">iTerm</span></div>
+              <div class="plansteps">
+                <div class="pstep"><span class="pn">1</span> Add TokenService with refresh rotation</div>
+                <div class="pstep"><span class="pn">2</span> Move JWT secret into Keychain</div>
+                <div class="pstep"><span class="pn">3</span> Verify + refresh in middleware</div>
+                <div class="pstep"><span class="pn">4</span> Add /auth/refresh route + tests</div>
+                <div class="planfade"></div>
+              </div>
+              <div class="planmore">+2 more steps</div>
+              <div class="btns"><div class="btn ghost">Request changes</div><div class="btn primary indigo">Approve plan</div></div>
+              <div class="cardfoot"><span class="ait">Answer in terminal</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap"><div class="t">Plan review <span class="tag">indigo · my addition</span></div>
+          <div class="d">Sign off on a <b>plan-mode</b> proposal without switching windows: skim the steps, <b>Approve</b> or <b>Request changes</b>. Scrolls for longer plans. Not in your refs — added to complete the act-in-place set.</div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 02 · SESSION LIFECYCLE ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span><span class="sec-title">One session, every state</span>
+      <span class="sec-note">The activity line + accent carry the state. Same row, five moments.</span>
+    </div>
+    <div class="life">
+      <div>
+        <div class="darkcard">
+          <div class="frow working" style="padding:4px 2px"><div class="avatar working" style="width:30px;height:30px;border-radius:9px"><svg class="bot" viewBox="0 0 24 24" fill="none" style="width:18px;height:18px"><path d="M12 3.4v2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="2.7" r="1.15" fill="currentColor"/><rect x="5" y="5.6" width="14" height="11" rx="3.6" fill="currentColor" opacity=".22"/><rect x="5" y="5.6" width="14" height="11" rx="3.6" stroke="currentColor" stroke-width="1.5"/><circle cx="9.6" cy="11.1" r="1.5" fill="currentColor"/><circle cx="14.4" cy="11.1" r="1.5" fill="currentColor"/></svg></div>
+            <div class="fmain"><div class="ftitle sm">fix auth bug</div><div class="factivity working">Writing middleware.ts…</div></div></div>
+        </div>
+        <div class="lifelabel">working<b>blue · live activity</b></div>
+      </div>
+      <div>
+        <div class="darkcard">
+          <div class="frow" style="padding:4px 2px"><span class="sdot amber" style="margin:6px 12px 0 4px"></span>
+            <div class="fmain"><div class="ftitle sm">fix auth bug</div><div class="factivity perm">Needs permission · Bash</div></div></div>
+        </div>
+        <div class="lifelabel">needs permission<b>amber · decide</b></div>
+      </div>
+      <div>
+        <div class="darkcard">
+          <div class="frow" style="padding:4px 2px"><span class="sdot teal" style="margin:6px 12px 0 4px"></span>
+            <div class="fmain"><div class="ftitle sm">fix auth bug</div><div class="factivity ask">Asked a question</div></div></div>
+        </div>
+        <div class="lifelabel">needs input<b>teal · answer</b></div>
+      </div>
+      <div>
+        <div class="darkcard">
+          <div class="frow done" style="padding:4px 2px"><div class="avatar done" style="width:30px;height:30px;border-radius:9px"><svg class="bot" viewBox="0 0 24 24" fill="none" style="width:18px;height:18px"><path d="M12 3.4v2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="2.7" r="1.15" fill="currentColor"/><rect x="5" y="5.6" width="14" height="11" rx="3.6" fill="currentColor" opacity=".22"/><rect x="5" y="5.6" width="14" height="11" rx="3.6" stroke="currentColor" stroke-width="1.5"/><circle cx="9.6" cy="11.1" r="1.5" fill="currentColor"/><circle cx="14.4" cy="11.1" r="1.5" fill="currentColor"/></svg></div>
+            <div class="fmain"><div class="ftitle sm">fix auth bug</div><div class="factivity done">Done — click to jump</div></div></div>
+        </div>
+        <div class="lifelabel">done<b>green · Glass ♪</b></div>
+      </div>
+      <div>
+        <div class="darkcard">
+          <div class="frow" style="padding:4px 2px"><span class="sdot red" style="margin:6px 12px 0 4px"></span>
+            <div class="fmain"><div class="ftitle sm">fix auth bug</div><div class="factivity fail">Failed — exit 1</div></div></div>
+        </div>
+        <div class="lifelabel">failed<b>red · Basso ♪</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · MANY AGENTS, MANY TERMINALS ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span><span class="sec-title">Many agents, many terminals</span>
+      <span class="sec-note">The pluggable seams: an AgentAdapter per CLI, a TerminalJumper per app. Add one = implement + register.</span>
+    </div>
+    <div class="matrix">
+      <div class="agentrows">
+        <div class="arow"><div class="avatar working" style="width:30px;height:30px;border-radius:9px"><svg class="bot" viewBox="0 0 24 24" fill="none" style="width:18px;height:18px"><path d="M12 3.4v2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="2.7" r="1.15" fill="currentColor"/><rect x="5" y="5.6" width="14" height="11" rx="3.6" fill="currentColor" opacity=".22"/><rect x="5" y="5.6" width="14" height="11" rx="3.6" stroke="currentColor" stroke-width="1.5"/><circle cx="9.6" cy="11.1" r="1.5" fill="currentColor"/><circle cx="14.4" cy="11.1" r="1.5" fill="currentColor"/></svg></div>
+          <div class="fmain"><div class="ftitle sm">fix auth bug</div><div class="fyou">Writing middleware.ts…</div></div>
+          <div class="fside"><span class="badge claude">Claude</span><span class="badge">iTerm</span></div></div>
+        <div class="arow"><span class="sdot blue" style="margin:0 8px"></span>
+          <div class="fmain"><div class="ftitle sm">backend server</div><div class="fyou">Running tests…</div></div>
+          <div class="fside"><span class="badge codex">Codex</span><span class="badge">Terminal</span></div></div>
+        <div class="arow"><span class="sdot green" style="margin:0 8px"></span>
+          <div class="fmain"><div class="ftitle sm">optimize queries</div><div class="fyou">Done — click to jump</div></div>
+          <div class="fside"><span class="badge gemini">Gemini</span><span class="badge">Ghostty</span></div></div>
+      </div>
+      <div>
+        <div class="cap" style="margin-top:0"><div class="t">Agents</div></div>
+        <div class="chipwrap">
+          <span class="chip on">Claude Code</span><span class="chip soon">Codex</span><span class="chip soon">Gemini CLI</span>
+        </div>
+        <div class="cap" style="margin-top:18px"><div class="t">Terminals (jump-to-pane)</div></div>
+        <div class="chipwrap">
+          <span class="chip on">iTerm2</span><span class="chip soon">Terminal.app</span><span class="chip soon">Ghostty</span><span class="chip soon">Warp</span><span class="chip soon">tmux</span><span class="chip soon">VS Code</span>
+        </div>
+        <div class="legend-inline">● solid = shipping in v1 &nbsp;·&nbsp; ◌ dashed = v2 via the adapter seam<br>badge tint: <span style="color:var(--ag-claude)">Claude</span> · <span style="color:var(--ag-codex)">Codex</span> · <span style="color:var(--ag-gemini)">Gemini</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 · ROADMAP BEYOND THE GLASS ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">04</span><span class="sec-title">Beyond the glass</span>
+      <span class="sec-note">Same model, further reach. Sketches, not designs — furthest out on the roadmap.</span>
+    </div>
+    <div class="road">
+      <div class="roadcard"><span class="soon">later</span>
+        <h3>SSH remote</h3>
+        <p>Monitor sessions running on a remote box; the bridge posts over a tunnel. Jump opens the local terminal already SSH'd in.</p>
+        <div class="sshrow"><span class="sdot blue" style="margin:0"></span><div class="fmain"><div class="ftitle sm">train-model</div><div class="fyou">epoch 3/10 · loss 0.42</div></div><span class="badge">prod-box ⇢ ssh</span></div>
+      </div>
+      <div class="roadcard"><span class="soon">later</span>
+        <h3>Mobile relay</h3>
+        <p>Mirror the notch to your phone (Happy/Omnara pattern) — get the permission prompt and approve from anywhere.</p>
+        <div class="phone"><div class="pnotch">🟠2&nbsp;🔵1</div></div>
+      </div>
+      <div class="roadcard"><span class="soon">exploring</span>
+        <h3>Cost &amp; limits</h3>
+        <p>The usage header, expanded: burn-down per window, projected reset, and server-truth rate limits (CCSeva OAuth), not just local token math.</p>
+        <div class="sshrow" style="justify-content:space-between"><span style="font-family:var(--code);font-size:12px;color:#ffd479">✦ 5h</span><span class="ubar" style="width:90px"><i style="width:11%"></i></span><span style="font-family:var(--code);font-size:11px;color:var(--muted)">resets 4h01m</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>What's real —</b> the interaction <b>behaviors</b> on this page ship today (act-in-place, answer-in-place,
+    rich glance, multi-agent/terminal — all merged to <span class="k">main</span>). This refresh is the <b>visual target</b>
+    for the polish pass that brings the live SwiftUI up to this look.<br>
+    <b>Honesty fences —</b> click-only panel ⇒ number chips are a <b>visual index</b>, not keyboard shortcuts;
+    the usage header shows <b>tokens &amp; cost across active sessions</b> (no rate-limit windows yet); the mockup's
+    <span class="k">You:</span> prompt line is dropped (no data source).<br>
+    <b>Fidelity —</b> panel/diff/wallpaper are hand-drawn approximations of DynamicNotchKit + macOS; glyphs, labels
+    and the state system are the intended contract. <br>
+    <span style="color:var(--faint)">← back to <a href="./claudenotch-ui-preview.html" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(217,119,87,.4)">v1 states</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

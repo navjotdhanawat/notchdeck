@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root{
+  /* palette (Graphite fallback; ThemeProvider overwrites at runtime) */
+  --surface-top:#131316; --surface-bottom:#0C0C0E;
+  --inner-box:rgba(0,0,0,.28); --border:rgba(255,255,255,.12);
+  --text-primary:#ECEAE4; --text-secondary:#8B8B93; --on-accent:#ffffff;
+  --st-working:#0A84FF; --st-done:#30D158; --st-failed:#FF453A;
+  --st-perm:#FF9F0A; --st-plan:#A78BFA; --st-ask:#5AC8FA; --st-ended:rgba(139,139,147,.75);
+  --needs-input-dot:#FFD60A;
+  --ag-claude:#E39178; --ag-codex:#5FD0B0; --ag-gemini:#8FB0F9;
+  --accent:#E39178;
+}
+
+/* Expose palette + fonts to Tailwind utilities (bg-surface-top, text-accent, font-serif, …) */
+@theme inline{
+  --color-surface-top:var(--surface-top);
+  --color-surface-bottom:var(--surface-bottom);
+  --color-inner-box:var(--inner-box);
+  --color-border-c:var(--border);
+  --color-text-primary:var(--text-primary);
+  --color-text-secondary:var(--text-secondary);
+  --color-on-accent:var(--on-accent);
+  --color-st-working:var(--st-working);
+  --color-st-done:var(--st-done);
+  --color-st-failed:var(--st-failed);
+  --color-st-perm:var(--st-perm);
+  --color-st-plan:var(--st-plan);
+  --color-st-ask:var(--st-ask);
+  --color-st-ended:var(--st-ended);
+  --color-needs-input-dot:var(--needs-input-dot);
+  --color-ag-claude:var(--ag-claude);
+  --color-ag-codex:var(--ag-codex);
+  --color-ag-gemini:var(--ag-gemini);
+  --color-accent:var(--accent);
+  --font-serif:var(--font-serif);
+  --font-mono:var(--font-mono);
+}
+
+body{
+  background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom)) fixed;
+  color:var(--text-primary);
+  font-family:var(--font-mono),ui-monospace,"SF Mono",Menlo,monospace;
+  -webkit-font-smoothing:antialiased;
+  transition:background .25s ease,color .25s ease;
+}
+
+:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important}
+}

@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ClaudeNotch — UI States Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     ClaudeNotch — UI states preview (static mockup, not a build)
+     Chrome aesthetic: "night-shift operator console".
+     The notch/menubar mockups use the REAL macOS system font so on
+     a Mac they render as authentic SF Pro + Apple Color Emoji.
+     ============================================================ */
+
+  :root{
+    --bg:#08080a; --bg-2:#101014;
+    --ink:#ECEAE4; --muted:#8b8b93; --faint:#565660;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.05);
+    --accent:#D97757;                 /* Claude terracotta — used sparingly */
+    /* Apple system status colors (how the emoji read) */
+    --s-orange:#FF9F0A; --s-yellow:#FFD60A; --s-blue:#0A84FF;
+    --s-green:#30D158;  --s-red:#FF453A;    --s-grey:#98989D;
+
+    --mac:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+    --serif:"Instrument Serif",ui-serif,Georgia,serif;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    --notch:#000;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--mono); font-weight:400;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(1200px 700px at 50% -8%, rgba(217,119,87,.10), transparent 60%),
+      radial-gradient(900px 600px at 88% 4%, rgba(10,132,255,.06), transparent 55%),
+      radial-gradient(circle at center, rgba(255,255,255,.020) .9px, transparent 1px);
+    background-size:auto, auto, 26px 26px;
+    background-attachment:fixed;
+  }
+  /* faint scanline / vignette overlay */
+  body::after{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:60;
+    background:
+      linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px) 0 0/100% 3px,
+      radial-gradient(120% 90% at 50% 0%, transparent 60%, rgba(0,0,0,.55) 100%);
+    mix-blend-mode:soft-light; opacity:.5;
+  }
+
+  .wrap{max-width:1120px; margin:0 auto; padding:0 26px 100px}
+
+  /* ---------- Masthead ---------- */
+  header.masthead{padding:70px 0 30px; border-bottom:1px solid var(--line)}
+  .kicker{
+    font-family:var(--mono); font-size:11px; letter-spacing:.42em; text-transform:uppercase;
+    color:var(--accent); display:flex; align-items:center; gap:12px;
+  }
+  .kicker::before{content:""; width:30px; height:1px; background:var(--accent); display:inline-block}
+  h1{
+    font-family:var(--serif); font-weight:400; font-size:clamp(52px,9vw,116px);
+    line-height:.92; margin:16px 0 0; letter-spacing:-.01em;
+  }
+  h1 em{font-style:italic; color:var(--accent)}
+  .sub{
+    margin-top:20px; max-width:660px; color:var(--muted); font-size:13.5px; line-height:1.75;
+  }
+  .sub b{color:var(--ink); font-weight:500}
+  .caret{display:inline-block; width:9px; height:1.05em; background:var(--accent);
+    transform:translateY(2px); margin-left:4px; animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .metabar{margin-top:26px; display:flex; flex-wrap:wrap; gap:10px}
+  .chip{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--muted);
+    border:1px solid var(--line); border-radius:999px; padding:6px 12px; background:rgba(255,255,255,.02);
+  }
+  .chip b{color:var(--ink); font-weight:500}
+
+  /* ---------- Section scaffolding ---------- */
+  section{padding-top:64px}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:24px}
+  .sec-num{font-family:var(--mono); font-size:11px; color:var(--accent); letter-spacing:.2em}
+  .sec-title{font-family:var(--serif); font-size:34px; line-height:1; font-weight:400}
+  .sec-note{margin-left:auto; color:var(--faint); font-size:11px; max-width:340px; text-align:right; line-height:1.6}
+
+  /* ============================================================
+     macOS stage + notch primitives  (rendered with --mac font)
+     ============================================================ */
+  .stage{
+    position:relative; border-radius:16px; overflow:hidden;
+    border:1px solid var(--line);
+    background:
+      radial-gradient(140% 120% at 20% -20%, #26304a 0%, #161a26 42%, #0c0d13 100%);
+    box-shadow:0 30px 70px -30px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
+    font-family:var(--mac);
+  }
+  .stage.tall{min-height:360px}
+  .stage.short{min-height:132px}
+  /* soft desktop light blob for realism */
+  .stage::before{
+    content:""; position:absolute; width:60%; height:120%; left:58%; top:-30%;
+    background:radial-gradient(closest-side, rgba(120,150,255,.16), transparent 70%);
+    filter:blur(6px); pointer-events:none;
+  }
+
+  /* --- menu bar --- */
+  .menubar{
+    position:absolute; top:0; left:0; right:0; height:34px; z-index:5;
+    display:flex; align-items:center; justify-content:space-between; padding:0 12px;
+    background:linear-gradient(rgba(0,0,0,.34),rgba(0,0,0,.14));
+    backdrop-filter:blur(9px) saturate(140%); -webkit-backdrop-filter:blur(9px) saturate(140%);
+    border-bottom:1px solid rgba(255,255,255,.06);
+    font-size:12.5px; color:rgba(255,255,255,.82);
+  }
+  .menubar.flat{background:linear-gradient(rgba(0,0,0,.30),rgba(0,0,0,.12))}
+  .mb-left{display:flex; align-items:center; gap:15px}
+  .mb-left .logo{font-size:13.5px}
+  .mb-left .app{font-weight:600}
+  .mb-left .mn{color:rgba(255,255,255,.62); font-weight:400}
+  .mb-right{display:flex; align-items:center; gap:13px; color:rgba(255,255,255,.9)}
+  .mb-right svg{display:block; opacity:.92}
+  .mb-right .clock{font-variant-numeric:tabular-nums; font-size:12.5px; letter-spacing:.1px}
+  .mb-item{font-size:15px; line-height:1; color:#fff; cursor:default}
+  .mb-item.active{color:#fff; background:rgba(255,255,255,.16); border-radius:5px; padding:2px 5px}
+
+  /* --- notch assembly (idle / compact) --- */
+  .notch-assembly{
+    position:absolute; top:0; left:50%; transform:translateX(-50%); z-index:8;
+    display:flex; align-items:stretch;
+  }
+  .n-mid{ background:var(--notch); width:172px; }
+  .n-cap{ background:var(--notch); display:flex; align-items:center; }
+  /* idle: plain notch block */
+  .notch-idle .n-mid{height:34px; border-radius:0 0 11px 11px}
+  /* the little camera dot on the notch */
+  .cam{position:absolute; top:12px; left:50%; transform:translateX(-50%);
+    width:6px; height:6px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #1b2740, #000 70%);
+    box-shadow:0 0 0 1px rgba(255,255,255,.05); z-index:9}
+
+  /* compact: black grows a left bump holding the counts */
+  .notch-compact{height:38px}
+  .notch-compact .n-mid{height:38px}
+  .notch-compact .n-cap.left{
+    height:38px; border-bottom-left-radius:17px; padding:0 12px 0 17px;
+  }
+  .notch-compact .n-cap.right{
+    height:38px; width:12px; border-bottom-right-radius:17px;
+  }
+  .counts{
+    display:flex; align-items:center; gap:6px;
+    color:#fff; font-family:var(--mac); font-size:14px; font-weight:500;
+    font-variant-numeric:tabular-nums; white-space:nowrap;
+  }
+  .counts .em{font-size:13px}     /* keep glyph + number visually tight */
+
+  /* --- expanded panel (drops below the notch) --- */
+  .notch-expanded{
+    position:absolute; top:0; left:50%; transform:translateX(-50%); z-index:8;
+    width:320px; background:var(--notch);
+    border-radius:0 0 27px 27px; padding:34px 0 0;   /* 34px clears the notch zone */
+    box-shadow:0 26px 50px -14px rgba(0,0,0,.75), 0 0 0 .5px rgba(255,255,255,.05);
+  }
+  .exp-inner{padding:12px; display:flex; flex-direction:column; gap:6px}
+  .exp-empty{padding:14px 12px; color:rgba(255,255,255,.55); font-size:13px; font-family:var(--mac)}
+
+  .row{
+    display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:9px;
+    font-family:var(--mac); cursor:default; transition:background .16s ease;
+  }
+  .row:hover{background:rgba(255,255,255,.09)}
+  .row .glyph{font-size:15px; width:19px; text-align:center; flex:0 0 auto}
+  .row .txt{display:flex; flex-direction:column; gap:1px; min-width:0}
+  .row .title{color:#fff; font-size:13px; font-weight:600; letter-spacing:.1px}
+  .row .meta{color:rgba(255,255,255,.55); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .row .ret{margin-left:auto; color:rgba(255,255,255,.42); font-size:13px; flex:0 0 auto; transition:color .16s ease}
+  .row:hover .ret{color:rgba(255,255,255,.85)}
+
+  /* --- floating bar fallback (notchless) --- */
+  .floatbar{
+    position:absolute; top:46px; left:50%; transform:translateX(-50%); z-index:8;
+    background:var(--notch); border-radius:19px; height:38px; padding:0 16px;
+    display:flex; align-items:center; box-shadow:0 18px 40px -12px rgba(0,0,0,.8), 0 0 0 .5px rgba(255,255,255,.06);
+  }
+  .floatbar.wide{height:auto; padding:10px 0 12px; width:320px; border-radius:22px}
+
+  /* ---------- Hero ---------- */
+  .hero-stage{min-height:150px; transition:min-height .45s cubic-bezier(.2,.7,.2,1)}
+  .hero-stage:hover{min-height:392px}
+  .hero-stage .notch-compact{opacity:1; transition:opacity .28s ease}
+  .hero-stage .notch-expanded{opacity:0; transform:translate(-50%,-8px) scale(.98);
+    transform-origin:top center; transition:opacity .32s ease, transform .38s cubic-bezier(.2,.7,.2,1); pointer-events:none}
+  .hero-stage:hover .notch-compact{opacity:0}
+  .hero-stage:hover .notch-expanded{opacity:1; transform:translate(-50%,0) scale(1); pointer-events:auto}
+  .hero-hint{
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%); z-index:9;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:rgba(255,255,255,.5); display:flex; align-items:center; gap:8px;
+    transition:opacity .3s ease;
+  }
+  .hero-stage:hover .hero-hint{opacity:0}
+  .hero-hint .dot{width:6px; height:6px; border-radius:50%; background:var(--accent); animation:ping 1.6s ease-out infinite}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(217,119,87,.5)}70%,100%{box-shadow:0 0 0 8px rgba(217,119,87,0)}}
+
+  .callout{
+    margin-top:16px; border-left:2px solid var(--accent); padding:12px 16px;
+    background:rgba(217,119,87,.055); border-radius:0 10px 10px 0;
+    font-size:12px; line-height:1.7; color:var(--muted);
+  }
+  .callout b{color:var(--ink); font-weight:500}
+  .k{font-family:var(--mono); color:var(--ink); background:rgba(255,255,255,.06);
+    padding:1px 6px; border-radius:5px; font-size:11px}
+
+  /* ---------- Legend ---------- */
+  .legend{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  .lg{
+    display:flex; gap:14px; align-items:flex-start; padding:16px 18px;
+    border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,.018);
+    position:relative; overflow:hidden;
+  }
+  .lg::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--c)}
+  .lg .g{font-family:var(--mac); font-size:24px; line-height:1; flex:0 0 auto; margin-top:1px}
+  .lg .body{min-width:0}
+  .lg .name{font-family:var(--mono); font-size:12px; color:var(--ink); font-weight:500}
+  .lg .name .code{color:var(--c)}
+  .lg .lab{font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.6}
+  .lg .lab .q{color:var(--ink)}
+  .lg .where{margin-top:8px; font-family:var(--mono); font-size:10px; letter-spacing:.04em;
+    color:var(--faint); text-transform:uppercase}
+
+  /* ---------- Gallery ---------- */
+  .gallery{display:grid; grid-template-columns:repeat(2,1fr); gap:26px}
+  .gallery .full{grid-column:1 / -1}
+  .card{opacity:0; transform:translateY(16px); animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1; transform:none}}
+  .gallery .card:nth-child(1){animation-delay:.05s}
+  .gallery .card:nth-child(2){animation-delay:.12s}
+  .gallery .card:nth-child(3){animation-delay:.19s}
+  .gallery .card:nth-child(4){animation-delay:.26s}
+  .gallery .card:nth-child(5){animation-delay:.33s}
+  .gallery .card:nth-child(6){animation-delay:.40s}
+  .gallery .card:nth-child(7){animation-delay:.47s}
+  .cap{margin-top:14px}
+  .cap .t{font-family:var(--mono); font-size:12.5px; color:var(--ink); font-weight:500; display:flex; align-items:center; gap:9px}
+  .tag{font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--faint); border:1px solid var(--line); border-radius:5px; padding:2px 6px}
+  .cap .d{font-size:11.5px; color:var(--muted); line-height:1.65; margin-top:7px}
+  .cap .data{margin-top:9px; font-family:var(--mono); font-size:10.5px; color:var(--faint); line-height:1.7}
+  .cap .data b{color:var(--muted); font-weight:400}
+
+  /* ---------- Menu dropdown mockup ---------- */
+  .menu-pop{
+    position:absolute; top:30px; right:14px; z-index:9; width:210px;
+    background:rgba(40,40,44,.86); backdrop-filter:blur(24px) saturate(160%);
+    -webkit-backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.14); border-radius:10px; padding:5px;
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.7);
+    font-family:var(--mac); font-size:13px; color:#fff;
+  }
+  .mi{display:flex; align-items:center; gap:9px; padding:5px 10px; border-radius:6px; color:rgba(255,255,255,.92)}
+  .mi .check{width:14px; text-align:center; color:#fff; font-size:12px}
+  .mi.sel{background:var(--s-blue); color:#fff}
+  .mi .kbd{margin-left:auto; color:rgba(255,255,255,.55); font-size:12px}
+  .msep{height:1px; background:rgba(255,255,255,.12); margin:5px 8px}
+  .mb-anchor{color:#fff; background:rgba(255,255,255,.16); border-radius:5px; padding:2px 5px; font-size:15px}
+
+  /* ---------- footer ---------- */
+  footer{margin-top:80px; padding-top:26px; border-top:1px solid var(--line); color:var(--faint);
+    font-size:11.5px; line-height:1.85}
+  footer b{color:var(--muted); font-weight:400}
+  footer .k{color:var(--ink)}
+  .src{color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(217,119,87,.4)}
+
+  @media (max-width:760px){
+    .legend,.gallery{grid-template-columns:1fr}
+    .sec-note{display:none}
+    h1{font-size:64px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav style="display:flex;align-items:center;justify-content:space-between;padding:22px 0 0;font-family:var(--mono);font-size:11.5px">
+    <span style="color:var(--accent)">● v1 · shipping</span>
+    <a href="./claudenotch-v2-preview.html" style="color:var(--muted);text-decoration:none;border:1px solid var(--line);padding:7px 13px;border-radius:999px">v2 vision · act-in-place →</a>
+  </nav>
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="kicker">UI States Preview · v1</div>
+    <h1>Claude<em>Notch</em></h1>
+    <p class="sub">
+      A faithful, <b>static render</b> of the notch UI across every session state — pulled
+      straight from the SwiftUI views (<b>NotchViews.swift</b>), the menu-bar item, and the
+      notchless fallback. No build required.<span class="caret"></span>
+    </p>
+    <div class="metabar">
+      <span class="chip"><b>DynamicNotchKit</b> · black island</span>
+      <span class="chip">glyphs &amp; labels <b>= source of truth</b></span>
+      <span class="chip">system font → real <b>SF&nbsp;Pro</b> on macOS</span>
+      <span class="chip">hover the hero notch ↓</span>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section id="hero">
+    <div class="sec-head">
+      <span class="sec-num">00</span>
+      <span class="sec-title">The glance &amp; the reveal</span>
+      <span class="sec-note">Idle → compact pill on activity → expands on hover. The panel never steals focus, so iTerm2 stays frontmost.</span>
+    </div>
+
+    <div class="stage hero-stage">
+      <!-- menubar: app is .accessory, so the frontmost app (iTerm2) owns the left menus -->
+      <div class="menubar">
+        <div class="mb-left">
+          <span class="logo"></span>
+          <span class="app">iTerm2</span>
+          <span class="mn">Shell</span><span class="mn">Edit</span><span class="mn">View</span><span class="mn">Session</span>
+        </div>
+        <div class="mb-right">
+          <!-- wifi -->
+          <svg width="17" height="13" viewBox="0 0 17 13" fill="none"><path d="M8.5 11.5l2.2-2.4a3.1 3.1 0 00-4.4 0l2.2 2.4zM4.3 6.9a6 6 0 018.4 0M1.8 4.2a9.6 9.6 0 0113.4 0" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <!-- battery -->
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="2.5" width="21" height="8" rx="2.2" stroke="#fff" stroke-opacity=".55" stroke-width="1"/><rect x="2.6" y="4" width="15" height="5" rx="1" fill="#fff"/><rect x="23.2" y="4.7" width="1.6" height="3.6" rx=".8" fill="#fff" fill-opacity=".6"/></svg>
+          <!-- control center -->
+          <svg width="15" height="13" viewBox="0 0 15 13" fill="none"><rect x="1" y="2" width="13" height="4" rx="2" stroke="#fff" stroke-width="1.1"/><rect x="1" y="7.2" width="13" height="4" rx="2" stroke="#fff" stroke-width="1.1"/><circle cx="10" cy="4" r="1.4" fill="#fff"/><circle cx="5" cy="9.2" r="1.4" fill="#fff"/></svg>
+          <span class="mb-item">◗</span>
+          <span class="clock">Wed 22 Jul&nbsp;&nbsp;9:41&nbsp;AM</span>
+        </div>
+      </div>
+
+      <div class="cam"></div>
+
+      <!-- COMPACT (default) : waiting = needsPermission(1)+needsInput(1)=2 → 🟠2 ; working=2 → 🔵2 -->
+      <div class="notch-assembly notch-compact">
+        <div class="n-cap left"><span class="counts"><span class="em">🟠</span>2&nbsp;&nbsp;<span class="em">🔵</span>2</span></div>
+        <div class="n-mid"></div>
+        <div class="n-cap right"></div>
+      </div>
+
+      <!-- EXPANDED (on hover) -->
+      <div class="notch-expanded">
+        <div class="exp-inner">
+          <div class="row"><span class="glyph">🟠</span><span class="txt"><span class="title">api-service</span><span class="meta">needs permission · Bash</span></span><span class="ret">↵</span></div>
+          <div class="row"><span class="glyph">🟡</span><span class="txt"><span class="title">web-frontend</span><span class="meta">needs input</span></span><span class="ret">↵</span></div>
+          <div class="row"><span class="glyph">🔵</span><span class="txt"><span class="title">worker-queue</span><span class="meta">working · Edit</span></span><span class="ret">↵</span></div>
+          <div class="row"><span class="glyph">🔵</span><span class="txt"><span class="title">docs-site</span><span class="meta">working · Grep</span></span><span class="ret">↵</span></div>
+          <div class="row"><span class="glyph">✅</span><span class="txt"><span class="title">billing-svc</span><span class="meta">done</span></span><span class="ret">↵</span></div>
+          <div class="row"><span class="glyph">❌</span><span class="txt"><span class="title">data-pipeline</span><span class="meta">failed</span></span><span class="ret">↵</span></div>
+        </div>
+      </div>
+
+      <div class="hero-hint"><span class="dot"></span> hover the notch to expand</div>
+    </div>
+
+    <div class="callout">
+      <b>Compact-count logic (from <span class="k">NotchCompactView</span>):</b> the pill shows
+      <span class="k">🟠{waiting}</span> where <b>waiting = needsPermission + needsInput</b>, then
+      <span class="k">🔵{working}</span>. So a session that “needs input” (🟡 when expanded) is folded into the
+      <b>🟠</b> count in the pill. <b>done / failed / ended never appear in the pill</b> — you only see them on hover.
+      Trailing side is empty (<span class="k">compactTrailing = EmptyView</span>).
+    </div>
+  </section>
+
+  <!-- ============ STATE LEGEND ============ -->
+  <section id="states">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="sec-title">State key</span>
+      <span class="sec-note">Six states, driven purely by Claude Code hook events. Glyph + label are exactly what the app renders.</span>
+    </div>
+
+    <div class="legend">
+      <div class="lg" style="--c:var(--s-blue)">
+        <span class="g">🔵</span>
+        <div class="body">
+          <div class="name"><span class="code">.working</span></div>
+          <div class="lab">label: <span class="q">“working”</span> <span style="color:var(--faint)">(+ current tool, e.g. · Bash)</span></div>
+          <div class="where">Pill 🔵 count · Expanded row</div>
+        </div>
+      </div>
+      <div class="lg" style="--c:var(--s-orange)">
+        <span class="g">🟠</span>
+        <div class="body">
+          <div class="name"><span class="code">.needsPermission</span></div>
+          <div class="lab">label: <span class="q">“needs permission”</span> <span style="color:var(--faint)">(+ tool)</span></div>
+          <div class="where">Pill 🟠 count · Expanded row</div>
+        </div>
+      </div>
+      <div class="lg" style="--c:var(--s-yellow)">
+        <span class="g">🟡</span>
+        <div class="body">
+          <div class="name"><span class="code">.needsInput</span></div>
+          <div class="lab">label: <span class="q">“needs input”</span> — idle prompt / question / elicitation</div>
+          <div class="where">Folds into pill 🟠 count · Expanded row</div>
+        </div>
+      </div>
+      <div class="lg" style="--c:var(--s-green)">
+        <span class="g">✅</span>
+        <div class="body">
+          <div class="name"><span class="code">.done</span></div>
+          <div class="lab">label: <span class="q">“done”</span> — plays <span class="q">Glass</span> sound on <span style="color:var(--faint)">Stop</span></div>
+          <div class="where">Expanded row only</div>
+        </div>
+      </div>
+      <div class="lg" style="--c:var(--s-red)">
+        <span class="g">❌</span>
+        <div class="body">
+          <div class="name"><span class="code">.failed</span></div>
+          <div class="lab">label: <span class="q">“failed”</span> — plays <span class="q">Basso</span> sound on <span style="color:var(--faint)">StopFailure</span></div>
+          <div class="where">Expanded row only</div>
+        </div>
+      </div>
+      <div class="lg" style="--c:var(--s-grey)">
+        <span class="g">⚪️</span>
+        <div class="body">
+          <div class="name"><span class="code">.ended</span></div>
+          <div class="lab">label: <span class="q">“ended”</span> — removed ~8s after SessionEnd (grace)</div>
+          <div class="where">Expanded row, briefly</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCENARIO GALLERY ============ -->
+  <section id="gallery">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="sec-title">Every scenario</span>
+      <span class="sec-note">Each stage is a slice of the top of the display. Menu bar shows iTerm2 frontmost — the notch is a non-activating panel.</span>
+    </div>
+
+    <div class="gallery">
+
+      <!-- S1 IDLE -->
+      <div class="card">
+        <div class="stage short">
+          <div class="menubar">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span><span class="mn">Edit</span></div>
+            <div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41 AM</span></div>
+          </div>
+          <div class="cam"></div>
+          <div class="notch-assembly notch-idle"><div class="n-mid"></div></div>
+        </div>
+        <div class="cap">
+          <div class="t">Idle <span class="tag">hidden</span></div>
+          <div class="d">No active sessions → the notch stays hidden. Near-zero footprint; just the physical notch and the menu-bar <span class="k">◗</span>.</div>
+          <div class="data"><b>sessions:</b> [] &nbsp;→&nbsp; <b>notch.hide()</b></div>
+        </div>
+      </div>
+
+      <!-- S2 COMPACT all working -->
+      <div class="card">
+        <div class="stage short">
+          <div class="menubar">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span><span class="mn">Edit</span></div>
+            <div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41 AM</span></div>
+          </div>
+          <div class="cam"></div>
+          <div class="notch-assembly notch-compact">
+            <div class="n-cap left"><span class="counts"><span class="em">🔵</span>4</span></div>
+            <div class="n-mid"></div><div class="n-cap right"></div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="t">All working <span class="tag">compact</span></div>
+          <div class="d">Four sessions cranking, nothing blocked. Only the 🔵 count shows — no 🟠, so nothing needs you.</div>
+          <div class="data"><b>working ×4</b> &nbsp;→&nbsp; 🔵4</div>
+        </div>
+      </div>
+
+      <!-- S3 COMPACT blocked only -->
+      <div class="card">
+        <div class="stage short">
+          <div class="menubar">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span><span class="mn">Edit</span></div>
+            <div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41 AM</span></div>
+          </div>
+          <div class="cam"></div>
+          <div class="notch-assembly notch-compact">
+            <div class="n-cap left"><span class="counts"><span class="em">🟠</span>2</span></div>
+            <div class="n-mid"></div><div class="n-cap right"></div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="t">Blocked, waiting on you <span class="tag">compact</span></div>
+          <div class="d">Two sessions need permission/input and none are working — the “everyone’s stalled, go look” glance.</div>
+          <div class="data"><b>needsPermission ×1 + needsInput ×1</b> &nbsp;→&nbsp; 🟠2</div>
+        </div>
+      </div>
+
+      <!-- S4 COMPACT mixed -->
+      <div class="card">
+        <div class="stage short">
+          <div class="menubar">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span><span class="mn">Edit</span></div>
+            <div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41 AM</span></div>
+          </div>
+          <div class="cam"></div>
+          <div class="notch-assembly notch-compact">
+            <div class="n-cap left"><span class="counts"><span class="em">🟠</span>2&nbsp;&nbsp;<span class="em">🔵</span>3</span></div>
+            <div class="n-mid"></div><div class="n-cap right"></div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="t">Mixed fleet <span class="tag">compact</span></div>
+          <div class="d">The everyday view running 5–6 agents: some blocked, some working. Reads left-to-right, attention-first.</div>
+          <div class="data"><b>waiting ×2, working ×3</b> &nbsp;→&nbsp; 🟠2&nbsp;&nbsp;🔵3</div>
+        </div>
+      </div>
+
+      <!-- S5 EXPANDED full (full width) -->
+      <div class="card full">
+        <div class="stage tall">
+          <div class="menubar">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span><span class="mn">Edit</span><span class="mn">View</span><span class="mn">Session</span></div>
+            <div class="mb-right">
+              <svg width="17" height="13" viewBox="0 0 17 13" fill="none"><path d="M8.5 11.5l2.2-2.4a3.1 3.1 0 00-4.4 0l2.2 2.4zM4.3 6.9a6 6 0 018.4 0M1.8 4.2a9.6 9.6 0 0113.4 0" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="2.5" width="21" height="8" rx="2.2" stroke="#fff" stroke-opacity=".55" stroke-width="1"/><rect x="2.6" y="4" width="15" height="5" rx="1" fill="#fff"/><rect x="23.2" y="4.7" width="1.6" height="3.6" rx=".8" fill="#fff" fill-opacity=".6"/></svg>
+              <span class="mb-item">◗</span><span class="clock">Wed 9:41 AM</span>
+            </div>
+          </div>
+          <div class="notch-expanded">
+            <div class="exp-inner">
+              <div class="row"><span class="glyph">🟠</span><span class="txt"><span class="title">api-service</span><span class="meta">needs permission · Bash</span></span><span class="ret">↵</span></div>
+              <div class="row"><span class="glyph">🟡</span><span class="txt"><span class="title">web-frontend</span><span class="meta">needs input</span></span><span class="ret">↵</span></div>
+              <div class="row"><span class="glyph">🔵</span><span class="txt"><span class="title">worker-queue</span><span class="meta">working · Edit</span></span><span class="ret">↵</span></div>
+              <div class="row"><span class="glyph">🔵</span><span class="txt"><span class="title">docs-site</span><span class="meta">working · Grep</span></span><span class="ret">↵</span></div>
+              <div class="row"><span class="glyph">✅</span><span class="txt"><span class="title">billing-svc</span><span class="meta">done</span></span><span class="ret">↵</span></div>
+              <div class="row"><span class="glyph">❌</span><span class="txt"><span class="title">data-pipeline</span><span class="meta">failed</span></span><span class="ret">↵</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="t">Expanded list — the whole fleet <span class="tag">320&nbsp;pt · hover / auto-surface</span></div>
+          <div class="d">One row per session: <b>glyph · title · state (· tool) · ↵</b>. Title is the project (cwd basename), else the Claude session id. Hover a row to see it highlight — clicking calls the TerminalJumper and raises that exact iTerm2 pane. Try hovering the rows.</div>
+          <div class="data"><b>width 320 · padding 12 · row-gap 6 · ↵ = jump affordance</b></div>
+        </div>
+      </div>
+
+      <!-- S6 EXPANDED empty -->
+      <div class="card">
+        <div class="stage tall" style="min-height:150px">
+          <div class="menubar">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span></div>
+            <div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41 AM</span></div>
+          </div>
+          <div class="notch-expanded" style="width:320px">
+            <div class="exp-empty">No active Claude Code sessions</div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="t">Expanded — empty <span class="tag">edge</span></div>
+          <div class="d">If the panel is forced open with nothing running, it shows the secondary-text empty line. In practice the notch is hidden when empty (see Idle).</div>
+          <div class="data"><b>sessions: []</b> &nbsp;→&nbsp; “No active Claude Code sessions”</div>
+        </div>
+      </div>
+
+      <!-- S7 COMPACT done-only edge -->
+      <div class="card">
+        <div class="stage short">
+          <div class="menubar">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span></div>
+            <div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41 AM</span></div>
+          </div>
+          <div class="cam"></div>
+          <div class="notch-assembly notch-compact">
+            <div class="n-cap left" style="padding:0 8px 0 8px"><span class="counts" style="opacity:.28; font-size:11px">⋯</span></div>
+            <div class="n-mid"></div><div class="n-cap right"></div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="t">Done-only <span class="tag">edge</span></div>
+          <div class="d">Sessions finished but not yet GC’d: the pill has <b>nothing to count</b> (done/failed aren’t counted), so it’s effectively blank — but expand and you’ll still see the ✅/❌ rows until they’re purged.</div>
+          <div class="data"><b>done ×2</b> &nbsp;→&nbsp; pill empty · rows remain on hover</div>
+        </div>
+      </div>
+
+      <!-- S8 MENU BAR dropdown -->
+      <div class="card">
+        <div class="stage short" style="min-height:220px">
+          <div class="menubar">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span></div>
+            <div class="mb-right">
+              <svg width="17" height="13" viewBox="0 0 17 13" fill="none"><path d="M8.5 11.5l2.2-2.4a3.1 3.1 0 00-4.4 0l2.2 2.4zM4.3 6.9a6 6 0 018.4 0M1.8 4.2a9.6 9.6 0 0113.4 0" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <span class="mb-anchor">◗</span><span class="clock">9:41 AM</span>
+            </div>
+          </div>
+          <div class="cam"></div>
+          <div class="notch-assembly notch-idle"><div class="n-mid"></div></div>
+          <div class="menu-pop">
+            <div class="mi"><span class="check"></span> Reinstall hooks</div>
+            <div class="mi"><span class="check"></span> Uninstall hooks</div>
+            <div class="mi sel"><span class="check">✓</span> Sound</div>
+            <div class="msep"></div>
+            <div class="mi"><span class="check"></span> Quit ClaudeNotch <span class="kbd">⌘Q</span></div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="t">Menu-bar control <span class="tag">◗ status item</span></div>
+          <div class="d">The only always-there control (app runs <span class="k">.accessory</span>, no Dock icon). Reinstall / Uninstall the Claude Code hooks, toggle Sound (shown on), and Quit.</div>
+          <div class="data"><b>Sound = ✓ · Quit routes to NSApp (⌘Q)</b></div>
+        </div>
+      </div>
+
+      <!-- S9 FLOATING BAR fallback -->
+      <div class="card">
+        <div class="stage short" style="min-height:150px">
+          <div class="menubar flat">
+            <div class="mb-left"><span class="logo"></span><span class="app">iTerm2</span><span class="mn">Shell</span></div>
+            <div class="mb-right"><span class="mb-item">◗</span><span class="clock">9:41 AM</span></div>
+          </div>
+          <!-- no physical notch on this display -->
+          <div class="floatbar"><span class="counts"><span class="em">🟠</span>2&nbsp;&nbsp;<span class="em">🔵</span>3</span></div>
+        </div>
+        <div class="cap">
+          <div class="t">Notchless fallback <span class="tag">external / non-notch display</span></div>
+          <div class="d">On a Mac (or external monitor) with no notch, DynamicNotchKit renders a <b>floating rounded bar</b> at top-center instead — same content, detached from the edge.</div>
+          <div class="data"><b>same counts &amp; expanded list · floating capsule</b></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <b>Fidelity —</b> exact from source: the six glyphs &amp; labels, the compact-count rule
+    (🟠 = needsPermission + needsInput, 🔵 = working), empty compactTrailing, the 320&nbsp;pt expanded
+    list (title / “state · tool” / ↵), the empty-state string, the <span class="k">◗</span> menu items, and the
+    Glass/Basso sounds. <br>
+    <b>Approximated —</b> panel blur, shadows, exact corner radii, menu-bar icons, and wallpaper are DynamicNotchKit /
+    macOS chrome, drawn here by hand. On a real Mac the notch shape &amp; SF&nbsp;Pro will be pixel-exact.<br>
+    <b>See the real thing —</b> <span class="k">swift run ClaudeNotchApp</span>, then start <span class="k">claude</span> sessions in iTerm2 (or POST synthetic events to <span class="k">127.0.0.1:&lt;port&gt;/hook/&lt;Event&gt;</span>).<br>
+    <span style="color:var(--faint)">Source: <a class="src" href="#">Sources/ClaudeNotchApp/UI/NotchViews.swift</a> · <a class="src" href="#">NotchController.swift</a> · <a class="src" href="#">AppCoordinator.swift</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

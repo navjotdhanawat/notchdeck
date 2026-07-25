@@ -110,8 +110,8 @@ export function ActInPlace() {
               {label}
             </h3>
 
-            {/* Card container (macOS panel aesthetic) */}
-            <div className="relative overflow-hidden rounded-[26px] border border-border-c bg-surface-bottom p-4 shadow-xl">
+            {/* Card container (macOS panel aesthetic) — flex-1 ensures all 3 cards stretch to identical height */}
+            <div className="relative flex flex-1 flex-col justify-between overflow-hidden rounded-[26px] border border-border-c bg-surface-bottom p-4 shadow-xl">
               {resolved ? (
                 // Resolved state: show choice + reset button
                 <div className="flex min-h-[280px] flex-col items-center justify-center gap-4 text-center">

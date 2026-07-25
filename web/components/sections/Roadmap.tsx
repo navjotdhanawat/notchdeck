@@ -61,11 +61,22 @@ export function Roadmap() {
             Mirror the notch to your phone (Happy/Omnara pattern) — get the permission prompt
             and approve from anywhere.
           </p>
-          {/* Phone mockup */}
-          <div className="mx-auto flex h-[120px] w-[60px] items-start justify-center rounded-[12px] border-2 border-border-c bg-gradient-to-b from-surface-top to-surface-bottom p-2">
-            <div className="rounded-full border border-border-c bg-inner-box px-2 py-1 font-mono text-[9px] leading-none text-text-primary">
-              🟠2 🔵1
+          {/* Example row — mirrors SSH Remote layout */}
+          <div className="flex items-center gap-3 rounded-lg border border-border-c bg-inner-box px-2 py-[9px]">
+            <span
+              aria-hidden
+              className="mx-[3px] h-[9px] w-[9px] flex-none rounded-full bg-st-ask shadow-[0_0_8px_currentColor]"
+              style={{ color: "var(--st-ask)" }}
+            />
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[13.5px] font-semibold leading-tight text-text-primary">
+                deploy-preview
+              </div>
+              <div className="mt-[2px] truncate text-[11px] font-medium text-text-secondary">
+                approve from anywhere
+              </div>
             </div>
+            <Badge>phone ⇢ relay</Badge>
           </div>
         </div>
 

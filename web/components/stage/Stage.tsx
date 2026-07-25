@@ -182,17 +182,9 @@ export function Stage() {
       )}
 
       {/* desktop */}
-      <div className="relative z-10 px-4 pb-9 pt-4 sm:px-6">
+      <div className="relative z-10 px-4 pb-9 pt-0 sm:px-6">
         {/* notch panel (with the act-card overlay slot) */}
-        <div className="relative z-20">
-          <span
-            aria-hidden
-            className="absolute left-1/2 top-[9px] z-10 h-[6px] w-[6px] -translate-x-1/2 rounded-full"
-            style={{
-              background: "radial-gradient(circle at 35% 30%, #26324d, #000 70%)",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.06)",
-            }}
-          />
+        <div className="relative z-20 overflow-visible">
           <Notch sessions={sessions} usage={USAGE} onJump={onJump}>
             <ActCard
               prompt={activeSession?.act ?? null}
@@ -202,8 +194,8 @@ export function Stage() {
           </Notch>
         </div>
 
-        {/* terminal peeks tucked behind the panel's lower edge */}
-        <div className="relative z-0 mx-auto -mt-5 grid max-w-[760px] gap-3 sm:grid-cols-2">
+        {/* terminal peeks tucked cleanly below the panel */}
+        <div className="relative z-0 mx-auto mt-4 grid max-w-[760px] gap-3 sm:grid-cols-2">
           <TerminalWindow
             title={termA.title}
             lines={termA.lines}

@@ -8,17 +8,24 @@ const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["nor
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://claudenotch.app"
+  ),
   title: "ClaudeNotch — a live monitor for your Claude Code sessions",
-  description: "Turn your MacBook notch into mission control for parallel Claude Code & Codex sessions: glance, jump to the exact pane, and decide in place. 10 themes.",
+  description:
+    "Turn your MacBook notch into mission control for parallel Claude Code & Codex sessions: glance, jump to the exact pane, and decide in place. 10 themes.",
   openGraph: {
     type: "website",
+    url: "/",
     title: "ClaudeNotch — a live monitor for your Claude Code sessions",
-    description: "Turn your MacBook notch into mission control for parallel Claude Code & Codex sessions: glance, jump to the exact pane, and decide in place. 10 themes.",
+    description:
+      "Turn your MacBook notch into mission control for parallel Claude Code & Codex sessions: glance, jump to the exact pane, and decide in place. 10 themes.",
   },
   twitter: {
     card: "summary_large_image",
     title: "ClaudeNotch — a live monitor for your Claude Code sessions",
-    description: "Turn your MacBook notch into mission control for parallel Claude Code & Codex sessions: glance, jump to the exact pane, and decide in place. 10 themes.",
+    description:
+      "Turn your MacBook notch into mission control for parallel Claude Code & Codex sessions: glance, jump to the exact pane, and decide in place. 10 themes.",
   },
 };
 

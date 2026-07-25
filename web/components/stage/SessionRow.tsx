@@ -82,8 +82,7 @@ export function SessionRow({
       onKeyDown={clickable ? onKeyDown : undefined}
       style={{ fontFamily: SYS }}
       className={[
-        "flex gap-[11px] rounded-xl px-2 py-[9px] transition-colors",
-        compact ? "items-center" : "items-start",
+        "flex h-[36px] items-center gap-[11px] rounded-xl px-2 transition-colors",
         clickable ? "cursor-pointer" : "cursor-default",
         "hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/70",
       ].join(" ")}

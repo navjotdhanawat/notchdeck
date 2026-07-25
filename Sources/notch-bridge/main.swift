@@ -1,5 +1,5 @@
 import Foundation
-import ClaudeNotchCore
+import NotchDeckCore
 
 // notch-bridge <EventName> [subtype]  (monitoring mode: fire-and-forget)
 // notch-bridge decide <EventName>     (decide mode: block on response, print body)

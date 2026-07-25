@@ -13,8 +13,8 @@
 # real `claude` session in iTerm2 to test click-to-jump + the TCC prompt.
 set -euo pipefail
 
-CFG="$HOME/Library/Application Support/ClaudeNotch/bridge.json"
-[ -f "$CFG" ] || { echo "bridge.json not found at:"; echo "  $CFG"; echo "Is ClaudeNotchApp running? (swift run ClaudeNotchApp)"; exit 1; }
+CFG="$HOME/Library/Application Support/NotchDeck/bridge.json"
+[ -f "$CFG" ] || { echo "bridge.json not found at:"; echo "  $CFG"; echo "Is NotchDeckApp running? (swift run NotchDeckApp)"; exit 1; }
 
 # bridge.json is simple flat JSON: {"port":NNN,"token":"..."} — parse without deps.
 PORT=$(sed -n 's/.*"port"[[:space:]]*:[[:space:]]*\([0-9]*\).*/\1/p' "$CFG")

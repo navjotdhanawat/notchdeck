@@ -2,22 +2,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "ClaudeNotch",
+    name: "NotchDeck",
     platforms: [.macOS(.v14)],
     dependencies: [
         .package(url: "https://github.com/MrKai77/DynamicNotchKit.git", from: "1.0.0")
     ],
     targets: [
-        .target(name: "ClaudeNotchCore"),
+        .target(name: "NotchDeckCore"),
         .executableTarget(
-            name: "ClaudeNotchApp",
+            name: "NotchDeckApp",
             dependencies: [
-                "ClaudeNotchCore",
+                "NotchDeckCore",
                 .product(name: "DynamicNotchKit", package: "DynamicNotchKit")
             ]
         ),
-        .executableTarget(name: "notch-bridge", dependencies: ["ClaudeNotchCore"]),
-        .testTarget(name: "ClaudeNotchCoreTests", dependencies: ["ClaudeNotchCore"])
+        .executableTarget(name: "notch-bridge", dependencies: ["NotchDeckCore"]),
+        .testTarget(name: "NotchDeckCoreTests", dependencies: ["NotchDeckCore"])
     ],
     swiftLanguageModes: [.v5]
 )

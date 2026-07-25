@@ -65,7 +65,13 @@ public final class NotchController {
 
     /// Update pending decisions, auto-expand if non-empty, and pump visibility.
     public func update(pending: [DecisionRequest]) {
+        let hadPending = !vm.pendingDecisions.isEmpty
         vm.pendingDecisions = pending
+        if hadPending && pending.isEmpty {
+            hoverEnterTimer?.invalidate(); hoverEnterTimer = nil
+            hoverExitTimer?.invalidate(); hoverExitTimer = nil
+            isHovering = false
+        }
         desiredPresentation = presentation(pending: pending, sessions: vm.sessions)
         pump()
     }

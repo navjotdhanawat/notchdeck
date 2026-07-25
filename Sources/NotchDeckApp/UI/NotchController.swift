@@ -23,9 +23,10 @@ public final class NotchController {
         // fires an NSHapticFeedbackManager pulse on every hover-enter. On a Force Touch trackpad
         // that pulse drives the same actuator as a physical click, so it feels like the trackpad
         // clicking by itself when the cursor merely rests on the notch. Drop it; keep only the
-        // visible/shadow cues. (Hover-to-expand is unaffected — `$isHovering` still publishes.)
+        // shadow cues. (Hover-to-expand is managed by NotchController — `$isHovering` still publishes.)
+        // Note: Do NOT include `.keepVisible`, as it blocks programmatic state changes/hides when hover is active.
         notch = DynamicNotch(
-            hoverBehavior: [.keepVisible, .increaseShadow],
+            hoverBehavior: [.increaseShadow],
             expanded: { AnyView(NotchExpandedView(vm: vm)) },
             compactLeading: { AnyView(NotchCompactView(vm: vm)) },
             compactTrailing: { AnyView(EmptyView()) }
@@ -125,9 +126,18 @@ public final class NotchController {
             while applied != self.desiredPresentation {
                 let target = self.desiredPresentation
                 switch target {
-                case .hidden:   await self.notch?.hide();    self.stopClock()
-                case .compact:  await self.notch?.compact(); self.startClock()
-                case .expanded: await self.notch?.expand();  self.startClock()
+                case .hidden:
+                    await self.notch?.hide()
+                    self.stopClock()
+                case .compact:
+                    if applied == .expanded {
+                        await self.notch?.hide()
+                    }
+                    await self.notch?.compact()
+                    self.startClock()
+                case .expanded:
+                    await self.notch?.expand()
+                    self.startClock()
                 }
                 applied = target
             }

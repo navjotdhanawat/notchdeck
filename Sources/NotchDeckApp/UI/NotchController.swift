@@ -47,6 +47,7 @@ public final class NotchController {
     /// stuck visible or flickering under bursty updates).
     private enum Presentation { case hidden, compact, expanded }
     private var desiredPresentation: Presentation = .hidden
+    private var appliedPresentation: Presentation = .hidden
     private var isPumping = false
     private var clock: Timer?
     private var noticeTimer: Timer?
@@ -122,15 +123,19 @@ public final class NotchController {
         isPumping = true
         Task { [weak self] in
             guard let self else { return }
-            var applied: Presentation?
-            while applied != self.desiredPresentation {
+            while self.appliedPresentation != self.desiredPresentation {
                 let target = self.desiredPresentation
                 switch target {
                 case .hidden:
                     await self.notch?.hide()
                     self.stopClock()
                 case .compact:
-                    if applied == .expanded {
+                    // Always hide() before compact() when coming from expanded.
+                    // Using appliedPresentation (instance var) not a local — the local
+                    // started as nil every run so applied==.expanded was always false,
+                    // meaning isHovering in DynamicNotchKit was never reset and the
+                    // Combine sink never fired on the first hover after card dismissal.
+                    if self.appliedPresentation == .expanded {
                         await self.notch?.hide()
                     }
                     await self.notch?.compact()
@@ -139,7 +144,7 @@ public final class NotchController {
                     await self.notch?.expand()
                     self.startClock()
                 }
-                applied = target
+                self.appliedPresentation = target
             }
             self.isPumping = false
         }

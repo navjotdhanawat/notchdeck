@@ -18,3 +18,16 @@ xcuserdata/
 
 # SDD scratch
 .superpowers/
+
+# Next.js
+web/.next/
+web/node_modules/
+web/out/
+
+# Env files — never commit real secrets
+web/.env
+web/.env.local
+web/.env.*.local
+.env
+.env.local
+.env.*.local

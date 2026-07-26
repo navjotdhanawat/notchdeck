@@ -19,14 +19,21 @@ export function Hero() {
         style={{ fontFamily: "var(--font-serif)" }}
         className="mt-4 text-[clamp(52px,9vw,104px)] font-normal leading-[0.92] tracking-[-0.01em] text-text-primary"
       >
-        Claude<em className="text-accent not-italic">Notch</em>
+        Notch<em className="text-accent not-italic">Deck</em>
       </h1>
 
       <p className="mt-6 max-w-[640px] text-[15px] leading-relaxed text-text-secondary">
-        Your MacBook notch becomes mission control for parallel Claude Code and
-        Codex sessions. Glance at every run, jump straight to the exact terminal
-        pane, and decide right there in the notch — approve a tool, answer a
-        question, sign off a plan. <span className="text-text-primary">Gemini is on the way.</span>
+        Your MacBook notch becomes mission control for every AI agent you run.
+        Glance at all parallel sessions, jump to the exact terminal pane, and
+        decide right there in the notch — approve a tool, answer a question,
+        sign off a plan.{" "}
+        <span className="text-text-primary">
+          Claude Code and Codex today. Gemini, Aider, and more on the way.
+        </span>
+      </p>
+
+      <p className="mt-3 text-[13px] text-text-secondary">
+        Free 7-day trial · <span className="text-text-primary">$9.99</span> one-time after
       </p>
 
       {/* CTAs */}

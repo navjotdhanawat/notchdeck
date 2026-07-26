@@ -11,7 +11,7 @@ export function Nav() {
           style={{ fontFamily: "var(--font-serif)" }}
           className="shrink-0 text-[20px] font-normal tracking-tight text-text-primary transition-colors hover:text-accent"
         >
-          Claude<em className="text-accent not-italic">Notch</em>
+          Notch<em className="text-accent not-italic">Deck</em>
         </a>
 
         {/* in-page links */}
@@ -19,6 +19,7 @@ export function Nav() {
           <NavLink href="#features">Features</NavLink>
           <NavLink href="#act">Act in place</NavLink>
           <NavLink href="#themes">Themes</NavLink>
+          <NavLink href="#pricing">Pricing</NavLink>
           <NavLink href="#roadmap">Roadmap</NavLink>
         </div>
 

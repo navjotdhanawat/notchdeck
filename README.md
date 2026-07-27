@@ -8,7 +8,7 @@ Monitor multiple AI coding agents at a glance — click to jump to any session i
 
 [![macOS](https://img.shields.io/badge/macOS-14%2B-black?logo=apple&logoColor=white)](https://www.apple.com/macos/)
 [![Swift](https://img.shields.io/badge/Swift-6-orange?logo=swift&logoColor=white)](https://swift.org)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-Non--Commercial-blue)](LICENSE)
 [![Stars](https://img.shields.io/badge/stars-star%20on%20github-yellow?logo=github)](https://github.com/navjotdhanawat/notchdeck/stargazers)
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/navjotdhanawat)
 
@@ -158,9 +158,9 @@ See [docs/architecture.md](docs/architecture.md) for the full technical breakdow
 
 ## 💎 Free vs Pro
 
-NotchDeck's core is **open source and free forever** (MIT). Pro unlocks power-user features once they ship.
+NotchDeck's core is **free for personal and non-commercial use**. Commercial redistribution, reselling, or commercial use is prohibited without a commercial license. Pro unlocks power-user features once they ship.
 
-| Feature | Free | Pro |
+| Feature | Free (Personal) | Pro |
 |---------|------|-----|
 | Agent sessions | Up to 3 | Unlimited |
 | Claude Code & Codex CLI | ✅ | ✅ |
@@ -189,7 +189,7 @@ See [docs/contributing.md](docs/contributing.md) for the full guide.
 
 ## 📄 License
 
-MIT © [Navjot Dhanawat](https://github.com/navjotdhanawat)
+[Non-Commercial License (Free for Personal Use)](LICENSE) © [Navjot Dhanawat](https://github.com/navjotdhanawat). Personal & educational use is free; commercial redistribution or commercial use is strictly prohibited without explicit written consent.
 
 ---
 

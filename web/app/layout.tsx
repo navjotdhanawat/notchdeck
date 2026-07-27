@@ -116,7 +116,7 @@ const jsonLd = {
   },
   softwareVersion: "1.0",
   downloadUrl: `${SITE_URL}/api/download`,
-  license: "https://opensource.org/licenses/MIT",
+  license: "https://github.com/navjotdhanawat/notchdeck/blob/main/LICENSE",
   featureList: [
     "Monitor Claude Code sessions in MacBook notch",
     "Monitor Codex CLI sessions",

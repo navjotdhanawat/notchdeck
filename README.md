@@ -1,8 +1,5 @@
 <div align="center">
 
-<!-- PLACEHOLDER: Add a banner image at docs/screenshots/banner.png, then remove this comment -->
-<!-- <img src="docs/screenshots/banner.png" alt="NotchDeck Banner" width="800" /> -->
-
 # NotchDeck
 
 **Your MacBook notch, reimagined as an AI agent command deck.**
@@ -15,6 +12,9 @@ Monitor multiple AI coding agents at a glance — click to jump to any session i
 [![Stars](https://img.shields.io/github/stars/navjotdhanawat/notchdeck?style=flat)](https://github.com/navjotdhanawat/notchdeck/stargazers)
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/navjotdhanawat)
 
+<br /><br />
+<img src="docs/screenshots/notch-overview.png" alt="NotchDeck showing multiple agent sessions in the notch" width="750" />
+
 </div>
 
 ---
@@ -24,9 +24,6 @@ Monitor multiple AI coding agents at a glance — click to jump to any session i
 NotchDeck is a native macOS app that turns the MacBook Pro notch into a **live status dashboard** for your AI coding agent sessions.
 
 Running 4 parallel Claude Code sessions? Spinning up a Codex CLI job while Claude edits tests? NotchDeck shows every session's state — **working, needs input, needs permission, done, failed** — right in the notch. One click jumps you to the exact terminal pane. No yabai, no cloud, no telemetry.
-
-<!-- Replace with actual app screenshot -->
-<img src="docs/screenshots/notch-overview.png" alt="NotchDeck showing multiple agent sessions in the notch" width="700" />
 
 ---
 
@@ -46,32 +43,11 @@ Running 4 parallel Claude Code sessions? Spinning up a Codex CLI job while Claud
 
 ## 📸 Screenshots
 
-<table>
-  <tr>
-    <td align="center">
-      <!-- Replace with actual screenshot -->
-      <img src="docs/screenshots/notch-working.png" width="350" alt="Sessions working" />
-      <br /><sub><b>Multiple sessions — working</b></sub>
-    </td>
-    <td align="center">
-      <!-- Replace with actual screenshot -->
-      <img src="docs/screenshots/notch-permission.png" width="350" alt="Needs permission" />
-      <br /><sub><b>Session needs permission</b></sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <!-- Replace with actual screenshot -->
-      <img src="docs/screenshots/notch-done.png" width="350" alt="Session done" />
-      <br /><sub><b>Session completed</b></sub>
-    </td>
-    <td align="center">
-      <!-- Replace with actual screenshot -->
-      <img src="docs/screenshots/notch-themes.png" width="350" alt="Themes" />
-      <br /><sub><b>Theme options</b></sub>
-    </td>
-  </tr>
-</table>
+### Multi-session Command Deck (Expanded notch view)
+<img src="docs/screenshots/notch-overview.png" alt="NotchDeck multi-session monitoring" width="800" />
+
+### In-Notch Decision Workflows (Permission Gates, Prompt Questions, Task Plans)
+<img src="docs/screenshots/card-states.png" alt="NotchDeck workflow steps: Permission, Ask, Plan" width="800" />
 
 ---
 

@@ -11,14 +11,21 @@ swift build -c release
 APP_DIR="NotchDeck.app"
 CONTENTS_DIR="${APP_DIR}/Contents"
 MACOS_DIR="${CONTENTS_DIR}/MacOS"
+RESOURCES_DIR="${CONTENTS_DIR}/Resources"
 
 # Clear any old app folder
 rm -rf "${APP_DIR}"
 mkdir -p "${MACOS_DIR}"
+mkdir -p "${RESOURCES_DIR}"
 
 echo "Packaging binaries..."
 cp .build/release/NotchDeckApp "${MACOS_DIR}/"
 cp .build/release/notch-bridge "${MACOS_DIR}/"
+
+if [ -f "NotchDeck.icns" ]; then
+    echo "Adding app icon..."
+    cp NotchDeck.icns "${RESOURCES_DIR}/"
+fi
 
 echo "Creating Info.plist..."
 cat << 'EOF' > "${CONTENTS_DIR}/Info.plist"
@@ -42,6 +49,8 @@ cat << 'EOF' > "${CONTENTS_DIR}/Info.plist"
     <string>0.1.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>CFBundleIconFile</key>
+    <string>NotchDeck</string>
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
     <key>LSUIElement</key>

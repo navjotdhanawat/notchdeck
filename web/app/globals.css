@@ -8,8 +8,8 @@
   --st-working:#0A84FF; --st-done:#30D158; --st-failed:#FF453A;
   --st-perm:#FF9F0A; --st-plan:#A78BFA; --st-ask:#5AC8FA; --st-ended:rgba(139,139,147,.75);
   --needs-input-dot:#FFD60A;
-  --ag-claude:#E39178; --ag-codex:#5FD0B0; --ag-gemini:#8FB0F9;
-  --accent:#E39178;
+  --ag-claude:#00D8F6; --ag-codex:#5FD0B0; --ag-gemini:#8FB0F9;
+  --accent:#00D8F6;
 }
 
 /* Expose palette + fonts to Tailwind utilities (bg-surface-top, text-accent, font-serif, …) */

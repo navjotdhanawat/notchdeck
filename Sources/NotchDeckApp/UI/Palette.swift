@@ -87,7 +87,7 @@ struct Palette {
         working: Color(hex: 0x0A84FF), done: Color(hex: 0x30D158), failed: Color(hex: 0xFF453A),
         needsPermission: Color(hex: 0xFF9F0A), plan: Color(hex: 0xA78BFA), question: Color(hex: 0x5AC8FA),
         needsInputDot: Color(hex: 0xFFD60A),
-        agentClaude: Color(hex: 0xE39178), agentCodex: Color(hex: 0x5FD0B0), agentGemini: Color(hex: 0x8FB0F9))
+        agentClaude: Color(hex: 0x00D8F6), agentCodex: Color(hex: 0x5FD0B0), agentGemini: Color(hex: 0x8FB0F9))
 }
 
 private struct PaletteKey: EnvironmentKey {

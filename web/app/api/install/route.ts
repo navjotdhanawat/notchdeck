@@ -1,14 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
 
-const SCRIPT = `#!/bin/bash
+function getScript(downloadUrl: string) {
+  return `#!/bin/bash
 set -e
 
 APP_NAME="NotchDeck"
 INSTALL_DIR="/Applications"
 DMG_PATH="/tmp/NotchDeck.dmg"
-DOWNLOAD_URL="https://notchdeck.app/api/download"
+DOWNLOAD_URL="${downloadUrl}"
 
 echo ""
 echo "  Installing \${APP_NAME}..."
@@ -18,7 +19,7 @@ echo ""
 curl -fsSL --progress-bar "\${DOWNLOAD_URL}" -o "\${DMG_PATH}"
 
 # Mount
-MOUNT_POINT=$(hdiutil attach "\${DMG_PATH}" -nobrowse -quiet | tail -1 | awk '{print $NF}')
+MOUNT_POINT=\$(hdiutil attach "\${DMG_PATH}" -nobrowse -quiet | tail -1 | awk '{print \$NF}')
 
 # Copy
 cp -R "\${MOUNT_POINT}/\${APP_NAME}.app" "\${INSTALL_DIR}/"
@@ -39,9 +40,15 @@ echo "  Open it from Launchpad or run:"
 echo "    open \${INSTALL_DIR}/\${APP_NAME}.app"
 echo ""
 `;
+}
 
-export async function GET() {
-  return new NextResponse(SCRIPT, {
+export async function GET(req: NextRequest) {
+  // Determine the correct host dynamically
+  const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || "notchdeck.com";
+  const proto = req.headers.get("x-forwarded-proto") || "https";
+  const downloadUrl = `${proto}://${host}/api/download`;
+
+  return new NextResponse(getScript(downloadUrl), {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-store",

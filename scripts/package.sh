@@ -52,6 +52,9 @@ cat << 'EOF' > "${CONTENTS_DIR}/Info.plist"
 </plist>
 EOF
 
+echo "Applying ad-hoc code signature..."
+codesign --force --deep --sign - "${APP_DIR}"
+
 # Strip quarantine flag locally if we run it
 xattr -dr com.apple.quarantine "${APP_DIR}" 2>/dev/null || true
 

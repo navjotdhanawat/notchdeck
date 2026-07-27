@@ -1,0 +1,22 @@
+{
+  "name": "notchdeck-video",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio src/index.tsx",
+    "render:square": "remotion render src/index.tsx NotchDeckDemo --output out/notchdeck-square.mp4 --width 1080 --height 1080",
+    "render:landscape": "remotion render src/index.tsx NotchDeckLandscape --output out/notchdeck-landscape.mp4 --width 1920 --height 1080",
+    "render:720": "remotion render src/index.tsx NotchDeckDemo --output out/notchdeck-720p.mp4 --width 1280 --height 720"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.290",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.290"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.5",
+    "typescript": "^5.8.3"
+  }
+}

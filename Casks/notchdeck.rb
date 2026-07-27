@@ -16,6 +16,12 @@ cask "notchdeck" do
 
   app "NotchDeck.app"
 
+  postflight do
+    system_command "xattr",
+                   args: ["-dr", "com.apple.quarantine", "#{appdir}/NotchDeck.app"],
+                   sudo: false
+  end
+
   zap trash: [
     "~/Library/Application Support/NotchDeck",
     "~/Library/Caches/com.navjotdhanawat.NotchDeck",

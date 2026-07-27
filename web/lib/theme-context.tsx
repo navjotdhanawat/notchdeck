@@ -1,9 +1,20 @@
 "use client";
-import { createContext, useContext, useCallback, useSyncExternalStore } from "react";
+import { createContext, useContext, useCallback, useSyncExternalStore, useState, useEffect } from "react";
 import { PALETTES, paletteVars, type ThemeId, type Palette } from "@/lib/themes";
+import type { AnimationThemeId } from "@/lib/types";
 
 const KEY = "claudenotch.theme";
-type Ctx = { themeId: ThemeId; palette: Palette; setTheme: (id: ThemeId) => void };
+
+type Ctx = {
+  themeId: ThemeId;
+  palette: Palette;
+  setTheme: (id: ThemeId) => void;
+  pixelArtEnabled: boolean;
+  setPixelArtEnabled: (enabled: boolean) => void;
+  animationTheme: AnimationThemeId;
+  setAnimationTheme: (theme: AnimationThemeId) => void;
+};
+
 const ThemeCtx = createContext<Ctx | null>(null);
 
 function applyVars(id: ThemeId) {
@@ -13,15 +24,6 @@ function applyVars(id: ThemeId) {
   root.dataset.theme = id;
 }
 
-// --- external store: <html data-theme> is the source of truth -----------------
-// The pre-paint <ThemeScript> commits the saved theme to <html> before first
-// paint. We read it through useSyncExternalStore so that:
-//   • getServerSnapshot + the hydration render both return "graphite", matching
-//     the server HTML → no hydration mismatch in theme-dependent nodes;
-//   • right after hydration React adopts the real (already-painted) theme → no
-//     flash; and
-//   • nothing here touches localStorage during SSR/module eval → no Node
-//     `localStorage` ExperimentalWarning.
 const listeners = new Set<() => void>();
 function subscribe(cb: () => void) {
   listeners.add(cb);
@@ -38,13 +40,54 @@ function getServerSnapshot(): ThemeId {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const themeId = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  const setTheme = useCallback((id: ThemeId) => {
-    applyVars(id); // writes <html data-theme> + CSS vars — the store's source of truth
-    try { localStorage.setItem(KEY, id); } catch {}
-    listeners.forEach((cb) => cb()); // notify → getSnapshot re-reads → re-render
+  const [pixelArtEnabled, setPixelArtEnabledState] = useState(true);
+  const [animationTheme, setAnimationThemeState] = useState<AnimationThemeId>("lego");
+
+  // Load from localStorage on client-mount to avoid server snapshot mismatch
+  useEffect(() => {
+    try {
+      const savedArt = localStorage.getItem("claudenotch.pixelArtEnabled");
+      if (savedArt !== null) {
+        setPixelArtEnabledState(savedArt === "true");
+      }
+      const savedAnim = localStorage.getItem("claudenotch.animationTheme");
+      if (savedAnim !== null && ["lego", "pacman", "pokemon", "mario", "space"].includes(savedAnim)) {
+        setAnimationThemeState(savedAnim as AnimationThemeId);
+      }
+    } catch {}
   }, []);
 
-  return <ThemeCtx.Provider value={{ themeId, palette: PALETTES[themeId], setTheme }}>{children}</ThemeCtx.Provider>;
+  const setTheme = useCallback((id: ThemeId) => {
+    applyVars(id);
+    try { localStorage.setItem(KEY, id); } catch {}
+    listeners.forEach((cb) => cb());
+  }, []);
+
+  const setPixelArtEnabled = useCallback((enabled: boolean) => {
+    setPixelArtEnabledState(enabled);
+    try { localStorage.setItem("claudenotch.pixelArtEnabled", String(enabled)); } catch {}
+  }, []);
+
+  const setAnimationTheme = useCallback((theme: AnimationThemeId) => {
+    setAnimationThemeState(theme);
+    try { localStorage.setItem("claudenotch.animationTheme", theme); } catch {}
+  }, []);
+
+  return (
+    <ThemeCtx.Provider
+      value={{
+        themeId,
+        palette: PALETTES[themeId],
+        setTheme,
+        pixelArtEnabled,
+        setPixelArtEnabled,
+        animationTheme,
+        setAnimationTheme,
+      }}
+    >
+      {children}
+    </ThemeCtx.Provider>
+  );
 }
 
 export function useTheme() {

@@ -32,11 +32,30 @@ struct CardContainer<Content: View>: View {
 struct AccentStrip: View {
     let title: String
     let accent: Accent
+    var pixelArtEnabled: Bool = false
+    var theme: AnimationTheme = .lego
     @Environment(\.palette) private var palette
+
+    private var state: SessionState {
+        switch accent {
+        case .permission: return .needsPermission
+        case .question: return .needsInput
+        case .plan: return .needsPermission
+        case .working: return .working
+        case .done: return .done
+        case .failed: return .failed
+        default: return .ended
+        }
+    }
+
     var body: some View {
         HStack(spacing: 8) {
-            Circle().fill(palette.accent(accent)).frame(width: 8, height: 8)
-                .shadow(color: palette.accent(accent).opacity(0.6), radius: 4)
+            if pixelArtEnabled {
+                AnimatedPixelArtView(state: state, size: 20, theme: theme)
+            } else {
+                Circle().fill(palette.accent(accent)).frame(width: 8, height: 8)
+                    .shadow(color: palette.accent(accent).opacity(0.6), radius: 4)
+            }
             Text(title).font(.system(size: 13, weight: .semibold)).foregroundStyle(palette.accent(accent))
             Spacer(minLength: 0)
         }

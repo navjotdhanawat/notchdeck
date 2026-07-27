@@ -40,7 +40,7 @@ export function Notch({
   const C = 12; // concave corner radius in px
 
   return (
-    <div className="relative mx-auto -mt-8 w-[406px] max-w-full">
+    <div className="relative mx-auto -mt-8 w-[460px] max-w-full">
       {/* Left concave ear */}
       <div
         aria-hidden

@@ -10,6 +10,24 @@ export type SessionState =
   | "done"
   | "failed";
 
+/** The five animation themes. */
+export type AnimationThemeId = "lego" | "pacman" | "pokemon" | "mario" | "space";
+
+/** Custom token usage stats. */
+export interface TokenUsage {
+  input: number;
+  output: number;
+  cacheCreation: number;
+  cacheRead: number;
+  total: number;
+}
+
+export interface SessionUsage {
+  model?: string;
+  tokens: TokenUsage;
+  costUSD?: number;
+}
+
 /** The three act-in-place decision surfaces the notch can present. */
 export type ActKind = "permission" | "ask" | "plan";
 
@@ -75,6 +93,7 @@ export interface Session {
   elapsedMin: number;
   /** Present only while the session is blocked on a decision. */
   act?: ActPrompt;
+  usage?: SessionUsage;
 }
 
 /**
@@ -132,6 +151,9 @@ export const SEED_SESSIONS: Session[] = [
     state: "working",
     activity: "Writing middleware.ts…",
     elapsedMin: 27,
+    usage: {
+      tokens: { input: 22100, output: 8400, cacheCreation: 5000, cacheRead: 15000, total: 50500 }
+    }
   },
   {
     id: "s2",
@@ -142,6 +164,9 @@ export const SEED_SESSIONS: Session[] = [
     activity: "Needs permission · Edit middleware.ts",
     elapsedMin: 60,
     act: ACT_FIXTURES.permission,
+    usage: {
+      tokens: { input: 12000, output: 4200, cacheCreation: 2000, cacheRead: 8000, total: 26200 }
+    }
   },
   {
     id: "s3",
@@ -151,5 +176,8 @@ export const SEED_SESSIONS: Session[] = [
     state: "done",
     activity: "Done · 3 files changed",
     elapsedMin: 300,
+    usage: {
+      tokens: { input: 32000, output: 14200, cacheCreation: 10000, cacheRead: 70000, total: 126200 }
+    }
   },
 ];

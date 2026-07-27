@@ -6,9 +6,12 @@
 // recolors the card. Enter/exit run through the parent-owned AnimatePresence via
 // a keyed motion root (fade + scale), collapsed to instant under reduced motion.
 
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import type { ActKind, ActPrompt, DiffLine, Session } from "@/lib/types";
+import type { ActKind, ActPrompt, DiffLine, Session, SessionState } from "@/lib/types";
 import { Badge } from "@/components/ui/Badge";
+import { AnimatedPixelArt } from "@/components/stage/PixelArt";
+import { useTheme } from "@/lib/theme-context";
 
 /** Notch/panel body reads as native macOS, not the page serif. */
 const SYS =
@@ -30,14 +33,27 @@ const KIND: Record<ActKind, { label: string; tintText: string; dotBg: string }> 
 // --- shared pieces ----------------------------------------------------------
 
 function PanelTop({ kind }: { kind: ActKind }) {
+  const { pixelArtEnabled, animationTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const k = KIND[kind];
+  const state: SessionState = kind === "ask" ? "needsInput" : "needsPermission";
+
   return (
     <div className={`flex items-center gap-2 px-[2px] pb-[10px] text-[13px] font-semibold ${k.tintText}`}>
-      <span
-        aria-hidden
-        className={`h-2 w-2 flex-none rounded-full ${k.dotBg}`}
-        style={{ boxShadow: "0 0 8px currentColor" }}
-      />
+      {mounted && pixelArtEnabled ? (
+        <div className="flex-none">
+          <AnimatedPixelArt state={state} size={20} theme={animationTheme} />
+        </div>
+      ) : (
+        <span
+          aria-hidden
+          className={`h-2 w-2 flex-none rounded-full ${k.dotBg}`}
+          style={{ boxShadow: "0 0 8px currentColor" }}
+        />
+      )}
       {k.label}
     </div>
   );

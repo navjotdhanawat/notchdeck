@@ -1,0 +1,7 @@
+#!/bin/bash
+# description: Simulates active notch sessions and test retro theme audio (success, failure, permission)
+# usage: /simulate-theme [success | failure | permission | demo]
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+
+swift "$DIR/scripts/test-theme-audio.swift" "$@"

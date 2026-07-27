@@ -6,13 +6,13 @@
         <description>Most recent updates for NotchDeck macOS app.</description>
         <language>en</language>
         <item>
-            <title>Version 0.1.0</title>
-            <pubDate>Mon, 27 Jul 2026 12:00:00 +0000</pubDate>
+            <title>Version 0.2.0 - Auto Update Production Test</title>
+            <pubDate>Mon, 27 Jul 2026 13:30:00 +0000</pubDate>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure
-                url="https://github.com/navjotdhanawat/notchdeck/releases/download/v0.1.0/NotchDeck.dmg"
-                sparkle:version="1"
-                sparkle:shortVersionString="0.1.0"
+                url="https://github.com/navjotdhanawat/notchdeck/releases/download/v0.2.0/NotchDeck.dmg"
+                sparkle:version="2"
+                sparkle:shortVersionString="0.2.0"
                 type="application/octet-stream" />
         </item>
     </channel>

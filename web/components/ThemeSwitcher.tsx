@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@/lib/theme-context";
-import { THEME_ORDER, PALETTES } from "@/lib/themes";
+import { THEME_ORDER, PALETTES, type ThemeId } from "@/lib/themes";
+import { trackThemeChange } from "@/lib/analytics";
 
 /** macOS system stack for the menu-bar control. */
 const SYS =
@@ -18,6 +19,11 @@ export function ThemeSwitcher() {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectTheme = (id: ThemeId) => {
+    setTheme(id);
+    trackThemeChange(id, "switcher");
+  };
 
   // Close on outside click
   useEffect(() => {
@@ -60,7 +66,7 @@ export function ThemeSwitcher() {
       if (e.key === "Enter" && focusedIndex >= 0) {
         e.preventDefault();
         const id = THEME_ORDER[focusedIndex];
-        setTheme(id);
+        handleSelectTheme(id);
         setOpen(false);
         setFocusedIndex(-1);
         triggerRef.current?.focus();
@@ -122,7 +128,7 @@ export function ThemeSwitcher() {
                 tabIndex={focused ? 0 : -1}
                 aria-current={active ? "true" : undefined}
                 onClick={() => {
-                  setTheme(id);
+                  handleSelectTheme(id);
                   setOpen(false);
                   setFocusedIndex(-1);
                 }}

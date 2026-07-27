@@ -1,6 +1,7 @@
 "use client";
 
 import { WaitlistInline } from "@/components/sections/Waitlist";
+import { trackOutboundClick } from "@/lib/analytics";
 
 export function Footer() {
   return (
@@ -19,6 +20,7 @@ export function Footer() {
                 href="https://github.com/MrKai77/DynamicNotchKit"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackOutboundClick("dynamicnotchkit", "footer")}
                 className="text-accent underline decoration-accent/40 underline-offset-2 transition-colors hover:decoration-accent"
               >
                 DynamicNotchKit
@@ -36,6 +38,7 @@ export function Footer() {
               href="https://github.com/navjotdhanawat/notchdeck"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackOutboundClick("github", "footer")}
               className="transition-colors hover:text-text-primary"
             >
               GitHub
@@ -44,6 +47,7 @@ export function Footer() {
               href="https://buymeacoffee.com/navjotdhanawat"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackOutboundClick("sponsor", "footer")}
               className="transition-colors hover:text-text-primary"
             >
               Sponsor

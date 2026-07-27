@@ -21,9 +21,9 @@ export async function POST(req: NextRequest) {
       args: [email.toLowerCase().trim(), twitter?.trim() ?? null, source],
     });
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
+  } catch (e: unknown) {
     // UNIQUE constraint = already signed up
-    if (e?.message?.includes("UNIQUE")) {
+    if (e instanceof Error && e.message.includes("UNIQUE")) {
       return NextResponse.json({ ok: true, already: true });
     }
     throw e;

@@ -102,6 +102,12 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         notch.setPalette(themeStore.current.palette)
 
         notch.update(store.snapshot())
+
+        // 8. Present fullscreen interactive demo on first launch.
+        if !UserDefaults.standard.bool(forKey: "notch.hasSeenOnboarding") {
+            UserDefaults.standard.set(true, forKey: "notch.hasSeenOnboarding")
+            openDemo()
+        }
     }
 
     private func handle(_ event: HookEvent) {
@@ -208,6 +214,10 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         item.button?.title = "◗"
         let menu = NSMenu()
+
+        let demoItem = menu.addItem(withTitle: "✨ Live Notch Demo", action: #selector(openDemo), keyEquivalent: "")
+        menu.addItem(.separator())
+
         let reinstallItem = menu.addItem(withTitle: "Reinstall hooks", action: #selector(reinstall), keyEquivalent: "")
         let uninstallItem = menu.addItem(withTitle: "Uninstall hooks", action: #selector(uninstall), keyEquivalent: "")
         let clearApprovalsItem = menu.addItem(withTitle: "Clear remembered approvals", action: #selector(clearApprovals), keyEquivalent: "")
@@ -248,9 +258,17 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         // Only the custom-action items target self. The Quit item is intentionally left
         // targetless so terminate(_:) routes through the responder chain to NSApp — the app
         // runs as .accessory (no standard app menu / ⌘Q), so this menu is the only way to quit.
-        [reinstallItem, uninstallItem, clearApprovalsItem, soundItem].forEach { $0.target = self }
+        [demoItem, reinstallItem, uninstallItem, clearApprovalsItem, soundItem].forEach { $0.target = self }
         item.menu = menu
         statusItem = item
+    }
+
+    @objc private func openDemo() {
+        LiveNotchDemoEngine.shared.startDemo(
+            notchController: notch,
+            themeStore: themeStore,
+            soundPlayer: sound
+        )
     }
 
     @objc private func checkForUpdates() {

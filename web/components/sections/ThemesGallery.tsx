@@ -1,7 +1,8 @@
 "use client";
 import { Section } from "@/components/ui/Section";
 import { useTheme } from "@/lib/theme-context";
-import { THEME_ORDER, PALETTES } from "@/lib/themes";
+import { THEME_ORDER, PALETTES, type ThemeId } from "@/lib/themes";
+import { trackThemeChange } from "@/lib/analytics";
 
 /**
  * Live theme gallery — 10 clickable mini-notch preview cards, each rendered in
@@ -11,6 +12,11 @@ import { THEME_ORDER, PALETTES } from "@/lib/themes";
  */
 export function ThemesGallery() {
   const { themeId: activeId, setTheme } = useTheme();
+
+  const handleThemeClick = (id: ThemeId) => {
+    setTheme(id);
+    trackThemeChange(id, "gallery");
+  };
 
   return (
     <Section id="themes" num="05" title="10 switchable themes" note="Click any card to recolor the whole page in real time. Syncs with the menu-bar switcher.">
@@ -23,7 +29,7 @@ export function ThemesGallery() {
             <button
               key={id}
               type="button"
-              onClick={() => setTheme(id)}
+              onClick={() => handleThemeClick(id)}
               aria-pressed={isActive}
               className={[
                 "group relative flex flex-col gap-3 rounded-xl border-2 p-4 transition-all",

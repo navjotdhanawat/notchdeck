@@ -81,8 +81,9 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers,
     });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "internal server error" }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "internal server error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

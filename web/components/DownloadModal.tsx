@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  trackSelectInstallTab,
+  trackCopyInstallCommand,
+  trackTriggerDmgDownload,
+  trackSponsorClick,
+} from "@/lib/analytics";
 
 interface DownloadModalProps {
   onClose: () => void;
@@ -19,20 +25,28 @@ export function DownloadModal({ onClose }: DownloadModalProps) {
     };
   }, []);
 
+  const handleTabChange = (tab: InstallMethod) => {
+    setActiveTab(tab);
+    trackSelectInstallTab(tab);
+  };
+
   const brewCommand = "brew install navjotdhanawat/notchdeck/notchdeck";
   const curlCommand = "curl -fsSL https://notchdeck.app/api/install | bash";
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, method: "brew" | "curl") => {
     navigator.clipboard.writeText(text);
     setCopied(true);
+    trackCopyInstallCommand(method);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const triggerDownload = () => {
+    trackTriggerDmgDownload("modal");
     window.location.href = "/api/download";
   };
 
   const handleSponsorClick = () => {
+    trackSponsorClick("download_modal");
     window.open("https://buymeacoffee.com/navjotdhanawat", "_blank", "noopener,noreferrer");
     triggerDownload();
     onClose();
@@ -75,7 +89,7 @@ export function DownloadModal({ onClose }: DownloadModalProps) {
         <div className="grid grid-cols-3 gap-1 rounded-xl bg-white/[0.04] p-1 border border-white/[0.06]">
           <button
             type="button"
-            onClick={() => setActiveTab("brew")}
+            onClick={() => handleTabChange("brew")}
             className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-[13px] font-medium transition-all cursor-pointer ${
               activeTab === "brew"
                 ? "bg-white/[0.1] text-text-primary shadow-sm"
@@ -86,7 +100,7 @@ export function DownloadModal({ onClose }: DownloadModalProps) {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("curl")}
+            onClick={() => handleTabChange("curl")}
             className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-[13px] font-medium transition-all cursor-pointer ${
               activeTab === "curl"
                 ? "bg-white/[0.1] text-text-primary shadow-sm"
@@ -97,7 +111,7 @@ export function DownloadModal({ onClose }: DownloadModalProps) {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("dmg")}
+            onClick={() => handleTabChange("dmg")}
             className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-[13px] font-medium transition-all cursor-pointer ${
               activeTab === "dmg"
                 ? "bg-white/[0.1] text-text-primary shadow-sm"
@@ -119,7 +133,7 @@ export function DownloadModal({ onClose }: DownloadModalProps) {
                 <code className="select-all overflow-x-auto pr-2">{brewCommand}</code>
                 <button
                   type="button"
-                  onClick={() => copyToClipboard(brewCommand)}
+                  onClick={() => copyToClipboard(brewCommand, "brew")}
                   className="shrink-0 rounded-md bg-white/[0.08] px-2.5 py-1 text-[11px] font-sans font-medium text-text-primary hover:bg-white/[0.15] transition-colors cursor-pointer"
                 >
                   {copied ? "Copied! ✓" : "Copy"}
@@ -140,7 +154,7 @@ export function DownloadModal({ onClose }: DownloadModalProps) {
                 <code className="select-all overflow-x-auto pr-2">{curlCommand}</code>
                 <button
                   type="button"
-                  onClick={() => copyToClipboard(curlCommand)}
+                  onClick={() => copyToClipboard(curlCommand, "curl")}
                   className="shrink-0 rounded-md bg-white/[0.08] px-2.5 py-1 text-[11px] font-sans font-medium text-text-primary hover:bg-white/[0.15] transition-colors cursor-pointer"
                 >
                   {copied ? "Copied! ✓" : "Copy"}

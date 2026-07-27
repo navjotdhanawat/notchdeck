@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackOpenDownloadModal } from "@/lib/analytics";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { HowItWorks } from "@/components/sections/HowItWorks";
@@ -18,22 +19,25 @@ import { DownloadModal } from "@/components/DownloadModal";
 export default function Home() {
   const [showDownloadModal, setShowDownloadModal] = useState(false);
 
-  const openDownloadModal = () => setShowDownloadModal(true);
+  const openDownloadModal = (source: string = "unknown") => {
+    trackOpenDownloadModal(source);
+    setShowDownloadModal(true);
+  };
 
   return (
     <>
-      <Nav onDownloadClick={openDownloadModal} />
+      <Nav onDownloadClick={() => openDownloadModal("nav")} />
       <main>
-        <Hero onDownloadClick={openDownloadModal} />
+        <Hero onDownloadClick={() => openDownloadModal("hero")} />
         <HowItWorks />
         <ActInPlace />
         <Capabilities />
         <AgentsTerminals />
         <ThemesGallery />
         <Roadmap />
-        <Support onDownloadClick={openDownloadModal} />
+        <Support onDownloadClick={() => openDownloadModal("support")} />
         <Waitlist />
-        <CTA onDownloadClick={openDownloadModal} />
+        <CTA onDownloadClick={() => openDownloadModal("cta")} />
       </main>
       <Footer />
 

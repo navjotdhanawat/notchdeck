@@ -33,7 +33,7 @@ enum Themes {
         working: Color(hex: 0x6FB0A6), done: Color(hex: 0x86C08A), failed: Color(hex: 0xE0685C),
         needsPermission: Color(hex: 0xE8A85E), plan: Color(hex: 0xB79CC9), question: Color(hex: 0x7FB8C9),
         needsInputDot: Color(hex: 0xE9C46A),
-        agentClaude: Color(hex: 0xE39178), agentCodex: Color(hex: 0x9CC2A0), agentGemini: Color(hex: 0xA9B8D6)))
+        agentClaude: Color(hex: 0x00D8F6), agentCodex: Color(hex: 0x9CC2A0), agentGemini: Color(hex: 0xA9B8D6)))
 
     static let nord = Theme(id: "nord", name: "Nord", palette: Palette(
         surfaceTop: Color(hex: 0x3B4252), surfaceBottom: Color(hex: 0x2E3440),

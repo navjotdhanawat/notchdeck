@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 
 const GITHUB_URL = "https://github.com/navjotdhanawat/notchdeck/releases";
 
-export function CTA() {
+export function CTA({ onDownloadClick }: { onDownloadClick: () => void }) {
   return (
     <section
       id="download"
@@ -27,11 +27,17 @@ export function CTA() {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button variant="primary" href={GITHUB_URL} className="text-[14px]">
+          <Button variant="primary" onClick={onDownloadClick} className="text-[14px]">
             Download for macOS
           </Button>
-          <Button variant="ghost" href="#waitlist" className="text-[14px]">
-            Join waitlist
+          <Button
+            variant="ghost"
+            href="https://buymeacoffee.com/navjotdhanawat"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[14px]"
+          >
+            Sponsor on Buy Me a Coffee
           </Button>
         </div>
 

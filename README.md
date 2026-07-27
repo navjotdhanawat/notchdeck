@@ -13,6 +13,7 @@ Monitor multiple AI coding agents at a glance — click to jump to any session i
 [![Swift](https://img.shields.io/badge/Swift-6-orange?logo=swift&logoColor=white)](https://swift.org)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/navjotdhanawat/notchdeck?style=flat)](https://github.com/navjotdhanawat/notchdeck/stargazers)
+[![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/navjotdhanawat)
 
 </div>
 

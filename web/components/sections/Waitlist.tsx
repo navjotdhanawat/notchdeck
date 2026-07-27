@@ -31,14 +31,14 @@ function EmailForm({ source, placeholder = "you@example.com" }: { source: string
   if (state === "done") {
     return (
       <p className="text-[13px] text-accent">
-        You&apos;re on the list. We&apos;ll reach out when Pro launches.
+        You&apos;re on the list. We&apos;ll reach out with new updates.
       </p>
     );
   }
   if (state === "already") {
     return (
       <p className="text-[13px] text-text-secondary">
-        Already signed up — we&apos;ll let you know.
+        Already signed up.
       </p>
     );
   }
@@ -69,9 +69,8 @@ export function Waitlist() {
     <Section id="waitlist" num="08" title="Stay in the loop">
       <div className="flex flex-col items-center text-center">
         <p className="max-w-[480px] text-[14px] leading-relaxed text-text-secondary">
-          NotchDeck v1 is free. When Pro launches — with themes, session history,
-          and future agents — you&apos;ll hear it first.{" "}
-          <span className="text-text-primary">No spam. One email.</span>
+          Subscribe to get notified about new features, agent integrations, and releases.{" "}
+          <span className="text-text-primary">No spam. Only major updates.</span>
         </p>
 
         <div className="mt-6">
@@ -79,14 +78,23 @@ export function Waitlist() {
         </div>
 
         <p className="mt-4 text-[12px] text-text-secondary/50">
-          Or get Pro free now — post NotchDeck on X with 100+ likes and DM{" "}
+          NotchDeck is free and open-source. Sponsor our development on{" "}
           <a
-            href="https://x.com/navjotdhanawat"
+            href="https://buymeacoffee.com/navjotdhanawat"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-text-secondary underline underline-offset-2 hover:text-text-primary transition-colors"
+            className="text-text-secondary underline underline-offset-2 hover:text-accent transition-colors"
           >
-            @navjotdhanawat
+            Buy Me a Coffee
+          </a>{" "}
+          or view the codebase on{" "}
+          <a
+            href="https://github.com/navjotdhanawat/notchdeck"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-text-secondary underline underline-offset-2 hover:text-accent transition-colors"
+          >
+            GitHub
           </a>
         </p>
       </div>
@@ -98,7 +106,7 @@ export function Waitlist() {
 export function WaitlistInline() {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-[12px] font-medium text-text-secondary">Get notified at Pro launch</p>
+      <p className="text-[12px] font-medium text-text-secondary">Subscribe for updates</p>
       <EmailForm source="footer" placeholder="your@email.com" />
     </div>
   );

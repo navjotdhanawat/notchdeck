@@ -14,6 +14,8 @@ type ButtonProps = {
   href?: string;
   children: ReactNode;
   className?: string;
+  target?: string;
+  rel?: string;
 } & Omit<HTMLAttributes<HTMLElement>, "className" | "children">;
 
 const BASE =

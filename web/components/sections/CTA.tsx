@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 
-const INSTALL_CMD = `curl -fsSL https://install.notchdeck.com | bash`;
+const GITHUB_URL = "https://github.com/navjotdhanawat/notchdeck/releases";
 
 export function CTA() {
   return (
@@ -19,32 +19,19 @@ export function CTA() {
         </h2>
 
         <p className="mt-4 max-w-[480px] text-[14px] leading-relaxed text-text-secondary">
-          One command installs NotchDeck and auto-configures your agent hooks.
-          No account. No cloud. 7-day full trial, then{" "}
-          <span className="text-text-primary">$9.99</span> to keep it.
+          Download the latest release, double-click to open, and NotchDeck
+          auto-configures your agent hooks.{" "}
+          <span className="text-text-primary">
+            No account. No cloud. Completely free.
+          </span>
         </p>
 
-        {/* Install command */}
-        <div className="mt-8 flex w-full max-w-[520px] items-center gap-3 rounded-xl border border-border-c bg-surface-top px-4 py-3">
-          <span className="select-none font-mono text-[13px] text-text-secondary/50">$</span>
-          <code className="flex-1 text-left font-mono text-[13px] text-text-primary">
-            {INSTALL_CMD.replace(/^\$ /, "")}
-          </code>
-          <button
-            type="button"
-            onClick={() => navigator.clipboard?.writeText(INSTALL_CMD)}
-            className="shrink-0 rounded-md border border-border-c px-2.5 py-1 font-mono text-[11px] text-text-secondary transition-colors hover:border-white/20 hover:text-text-primary"
-          >
-            copy
-          </button>
-        </div>
-
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-          <Button variant="primary" href="#pricing" className="text-[14px]">
-            See pricing
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button variant="primary" href={GITHUB_URL} className="text-[14px]">
+            Download for macOS
           </Button>
-          <Button variant="ghost" href="#pricing" className="text-[14px]">
-            Start free trial
+          <Button variant="ghost" href="#waitlist" className="text-[14px]">
+            Join waitlist
           </Button>
         </div>
 

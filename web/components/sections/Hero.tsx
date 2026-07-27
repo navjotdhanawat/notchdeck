@@ -1,7 +1,4 @@
 "use client";
-// The hero: masthead (kicker + serif wordmark + subhead + CTAs) sitting above
-// the interactive Stage. Copy is confident present tense and accurate to spec §8
-// (Claude + Codex ship today, Gemini is planned; usage is tokens + cost only).
 
 import { Button } from "@/components/ui/Button";
 import { Stage } from "@/components/stage/Stage";
@@ -33,7 +30,8 @@ export function Hero() {
       </p>
 
       <p className="mt-3 text-[13px] text-text-secondary">
-        Free 7-day trial · <span className="text-text-primary">$9.99</span> one-time after
+        Free in v1 ·{" "}
+        <span className="text-text-primary">no trial, no card, no catch</span>
       </p>
 
       {/* CTAs */}

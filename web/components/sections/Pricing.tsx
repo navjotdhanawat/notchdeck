@@ -3,12 +3,6 @@
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 
-// Replace these with real LemonSqueezy checkout URLs after setup
-const BUY_PERSONAL_URL = "#buy-personal";
-const BUY_UPDATES_URL = "#buy-updates";
-const BUY_TEAMS_URL = "#buy-teams";
-const DOWNLOAD_URL = "#download";
-
 const CHECK = (
   <svg
     aria-hidden
@@ -28,29 +22,11 @@ const CHECK = (
   </svg>
 );
 
-const CROSS = (
-  <svg
-    aria-hidden
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    className="mt-[2px] shrink-0 opacity-25"
-  >
-    <path
-      d="M3.5 3.5L10.5 10.5M10.5 3.5L3.5 10.5"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-function Feature({ included, children }: { included: boolean; children: string }) {
+function Feature({ children }: { children: string }) {
   return (
     <li className="flex items-start gap-2 text-[13.5px] leading-snug text-text-secondary">
-      {included ? CHECK : CROSS}
-      <span className={included ? "text-text-primary" : ""}>{children}</span>
+      {CHECK}
+      <span className="text-text-primary">{children}</span>
     </li>
   );
 }
@@ -58,137 +34,116 @@ function Feature({ included, children }: { included: boolean; children: string }
 export function Pricing() {
   return (
     <Section id="pricing" num="07" title="Simple pricing">
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2 max-w-[720px] mx-auto">
 
-        {/* --- Free Trial --- */}
-        <div className="flex flex-col gap-6 rounded-xl border border-border-c bg-surface-top p-6">
+        {/* --- Free (v1) --- */}
+        <div className="flex flex-col gap-6 rounded-xl border border-accent/40 bg-surface-top p-6 shadow-[0_0_40px_-12px_var(--accent)]">
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border border-accent/30 bg-accent px-3 py-0.5 font-mono text-[10px] uppercase tracking-wider text-on-accent hidden" />
           <div>
             <p className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
-              Free trial
+              Free · v1
             </p>
             <p className="mt-2 font-serif text-4xl font-normal text-text-primary">
               $0
             </p>
             <p className="mt-1 text-[13px] text-text-secondary">
-              7 days, full access · no card required
+              Everything, forever · no card, no trial, no catch
             </p>
           </div>
 
           <ul className="flex flex-col gap-3">
-            <Feature included>All current features unlocked</Feature>
-            <Feature included>Claude Code + all agents</Feature>
-            <Feature included>Act-in-place decisions</Feature>
-            <Feature included>Cost tracking &amp; themes</Feature>
-            <Feature included>Session history</Feature>
+            <Feature>All current features unlocked</Feature>
+            <Feature>Claude Code + Codex + all agents</Feature>
+            <Feature>Act-in-place decisions</Feature>
+            <Feature>Cost tracking &amp; 10 themes</Feature>
+            <Feature>Session history</Feature>
+            <Feature>No telemetry · fully local</Feature>
           </ul>
 
           <div className="mt-auto">
-            <Button variant="ghost" href={DOWNLOAD_URL} className="w-full text-[13px]">
-              Start free trial
+            <Button variant="primary" href="#download" className="w-full text-[13px]">
+              Download for macOS
             </Button>
             <p className="mt-2 text-center text-[11px] text-text-secondary">
-              Downgrades automatically after 7 days
+              Apple Silicon · macOS 14+
             </p>
           </div>
         </div>
 
-        {/* --- Personal --- */}
+        {/* --- Pro (coming soon) --- */}
         <div className="flex flex-col gap-6 rounded-xl border border-border-c bg-surface-top p-6">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
-              Personal
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
+                Pro
+              </p>
+              <span className="rounded-md bg-surface-raised px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-text-secondary">
+                Coming soon
+              </span>
+            </div>
             <p className="mt-2 font-serif text-4xl font-normal text-text-primary">
-              $9.99
+              TBD
             </p>
             <p className="mt-1 text-[13px] text-text-secondary">
-              One-time · yours forever
+              Early supporters get it free — see below
             </p>
           </div>
 
           <ul className="flex flex-col gap-3">
-            <Feature included>Everything in Free trial</Feature>
-            <Feature included>Claude Code + all agents</Feature>
-            <Feature included>Act-in-place decisions</Feature>
-            <Feature included>Cost tracking &amp; themes</Feature>
-            <Feature included>Session history</Feature>
-            <Feature included={false}>Future major version updates</Feature>
+            <Feature>Everything in Free</Feature>
+            <Feature>SSH remote agent monitoring</Feature>
+            <Feature>Team seats &amp; shared sessions</Feature>
+            <Feature>Mobile relay (phone notifications)</Feature>
+            <Feature>Priority support</Feature>
+            <Feature>All future major version updates</Feature>
           </ul>
 
           <div className="mt-auto">
-            <Button variant="ghost" href={BUY_PERSONAL_URL} className="w-full text-[13px]">
-              Buy Personal
+            <Button variant="ghost" href="#waitlist" className="w-full text-[13px]">
+              Join waitlist
             </Button>
             <p className="mt-2 text-center text-[11px] text-text-secondary">
-              Single Mac · instant license key
-            </p>
-          </div>
-        </div>
-
-        {/* --- Personal + Updates (most popular) --- */}
-        <div className="relative flex flex-col gap-6 rounded-xl border border-accent/40 bg-surface-top p-6 shadow-[0_0_40px_-12px_var(--accent)]">
-          {/* Badge */}
-          <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border border-accent/30 bg-accent px-3 py-0.5 font-mono text-[10px] uppercase tracking-wider text-on-accent">
-            Most popular
-          </span>
-
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
-              Personal + Updates
-            </p>
-            <p className="mt-2 font-serif text-4xl font-normal text-text-primary">
-              $14.99
-            </p>
-            <p className="mt-1 text-[13px] text-text-secondary">
-              One-time · 12 months of major updates
-            </p>
-          </div>
-
-          <ul className="flex flex-col gap-3">
-            <Feature included>Everything in Personal</Feature>
-            <Feature included>Claude Code + all agents</Feature>
-            <Feature included>Act-in-place decisions</Feature>
-            <Feature included>Cost tracking &amp; themes</Feature>
-            <Feature included>Session history</Feature>
-            <Feature included>12 months of major version updates</Feature>
-          </ul>
-
-          <div className="mt-auto">
-            <Button variant="primary" href={BUY_UPDATES_URL} className="w-full text-[13px]">
-              Buy Personal + Updates
-            </Button>
-            <p className="mt-2 text-center text-[11px] text-text-secondary">
-              Single Mac · instant license key
+              Get notified when Pro launches
             </p>
           </div>
         </div>
       </div>
 
-      {/* Teams row */}
+      {/* Giveaway banner */}
       <div className="mt-5 flex flex-col items-center justify-between gap-4 rounded-xl border border-border-c bg-surface-top px-6 py-5 sm:flex-row">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
-            Teams · 3 seats
+            Get Pro free
           </p>
           <p className="mt-1 text-[15px] font-semibold text-text-primary">
-            <span className="mr-2 text-text-secondary line-through opacity-50">$29.99</span>
-            $19.99
-            <span className="ml-2 rounded-md bg-accent/15 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-accent">
-              Launch offer
-            </span>
+            Post NotchDeck on{" "}
+            <span className="text-accent">𝕏 (Twitter)</span> and get 100+ likes
           </p>
           <p className="mt-0.5 text-[13px] text-text-secondary">
-            One license key covers 3 Macs · SSH remote &amp; team features coming
+            DM{" "}
+            <a
+              href="https://x.com/navjotdhanawat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-text-primary underline underline-offset-2 hover:text-accent transition-colors"
+            >
+              @navjotdhanawat
+            </a>{" "}
+            with a link to your post — we&apos;ll send you a Pro key manually.
           </p>
         </div>
-        <Button variant="ghost" href={BUY_TEAMS_URL} className="shrink-0 text-[13px]">
-          Buy Teams
-        </Button>
+        <a
+          href="https://x.com/intent/tweet?text=Just%20discovered%20NotchDeck%20%E2%80%94%20puts%20your%20AI%20agent%20sessions%20right%20in%20the%20MacBook%20notch.%20Claude%20Code%2C%20Codex%2C%20act-in-place%20decisions%2C%20all%20free.%20notchdeck.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 rounded-lg border border-border-c bg-surface-raised px-4 py-2 font-mono text-[13px] text-text-primary transition-colors hover:border-white/20 hover:text-accent"
+        >
+          Share on 𝕏
+        </a>
       </div>
 
-      {/* Footer note */}
       <p className="mt-6 text-center text-[12px] text-text-secondary">
-        All prices in USD · no subscription · no renewal required · one-time purchase
+        v1 is fully free · paid Pro comes later · no bait-and-switch
       </p>
     </Section>
   );

@@ -64,7 +64,7 @@
   - [ ] Add demo GIF above fold
   - [ ] Link to demo video
   - [ ] Update feature list
-- [ ] Create landing page (notchdeck.com)
+- [ ] Create landing page (notchdeck.app)
   - [ ] Hero section
   - [ ] Demo video embed
   - [ ] Feature comparison table
@@ -147,7 +147,7 @@
 - [ ] Set Gumroad to live mode
 - [ ] Test purchase flow end-to-end
 - [ ] Verify license keys work
-- [ ] Set up support email (support@notchdeck.com)
+- [ ] Set up support email (support@notchdeck.app)
 - [ ] Create auto-responder for support
 - [ ] Set up analytics (Plausible, Simple Analytics, etc.)
 
@@ -337,4 +337,4 @@ A: Yes, but 1-2 weeks after initial launch. Let GitHub/HN users find bugs first.
 
 Good luck with your launch! 🚀
 
-Questions? Open a GitHub Discussion or email nav@notchdeck.com
+Questions? Open a GitHub Discussion or email nav@notchdeck.app

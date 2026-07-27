@@ -126,7 +126,7 @@ export function Support({ onDownloadClick }: { onDownloadClick: () => void }) {
           </p>
         </div>
         <a
-          href="https://x.com/intent/tweet?text=Just%20discovered%20NotchDeck%20%E2%80%94%20puts%20your%20AI%20agent%20sessions%20right%20in%20the%20MacBook%20notch.%20Claude%20Code%2C%20Codex%2C%20act-in-place%20decisions%2C%20all%20free.%20notchdeck.com"
+          href="https://x.com/intent/tweet?text=Just%20discovered%20NotchDeck%20%E2%80%94%20puts%20your%20AI%20agent%20sessions%20right%20in%20the%20MacBook%20notch.%20Claude%20Code%2C%20Codex%2C%20act-in-place%20decisions%2C%20all%20free.%20notchdeck.app"
           target="_blank"
           rel="noopener noreferrer"
           className="shrink-0 rounded-lg border border-border-c bg-surface-raised px-4 py-2 font-mono text-[13px] text-text-primary transition-colors hover:border-white/20 hover:text-accent"

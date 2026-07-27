@@ -44,7 +44,7 @@ echo ""
 
 export async function GET(req: NextRequest) {
   // Determine the correct host dynamically
-  const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || "notchdeck.com";
+  const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || "notchdeck.app";
   const proto = req.headers.get("x-forwarded-proto") || "https";
   const downloadUrl = `${proto}://${host}/api/download`;
 

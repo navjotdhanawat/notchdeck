@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://claudenotch.app";
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://notchdeck.app";
   return [
     {
       url: base,

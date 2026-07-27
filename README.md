@@ -171,7 +171,7 @@ NotchDeck's core is **open source and free forever** (MIT). Pro unlocks power-us
 | Session history | — | ✅ *(v3)* |
 | Priority support | — | ✅ |
 
-**Pro pricing:** $9/month · $79/year — [join the waitlist](https://notchdeck.vercel.app) to get notified at launch.
+**Pro pricing:** $9/month · $79/year — [join the waitlist](https://notchdeck.app) to get notified at launch.
 
 ---
 

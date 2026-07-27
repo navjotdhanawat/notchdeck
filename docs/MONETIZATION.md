@@ -134,7 +134,7 @@ private func validateLicense(_ key: String) async -> Bool {
     }
     
     // Call validation API
-    let url = URL(string: "https://api.notchdeck.com/v1/validate")!
+    let url = URL(string: "https://api.notchdeck.app/v1/validate")!
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.httpBody = try? JSONEncoder().encode(["license": key])
@@ -294,7 +294,7 @@ VStack(alignment: .leading, spacing: 16) {
         }
         
         Button("Purchase License ($9/mo)") {
-            NSWorkspace.shared.open(URL(string: "https://notchdeck.com/pro")!)
+            NSWorkspace.shared.open(URL(string: "https://notchdeck.app/pro")!)
         }
         .buttonStyle(.borderedProminent)
     }
@@ -324,7 +324,7 @@ VStack(alignment: .leading, spacing: 16) {
 
 2. Webhook endpoint (optional, for analytics):
    ```
-   POST https://api.notchdeck.com/webhooks/gumroad
+   POST https://api.notchdeck.app/webhooks/gumroad
    {
      "sale_id": "...",
      "license_key": "NOTCHDECK-PRO-...",
@@ -359,7 +359,7 @@ VStack(alignment: .leading, spacing: 16) {
 - Instructions to enter Pro license key in preferences
 - Clearly label "Open source with paid Pro tier"
 
-### Website (notchdeck.com)
+### Website (notchdeck.app)
 - Hero: "Monitor AI agents from your notch"
 - Feature comparison table (Free vs Pro)
 - Pricing: $9/mo or $79/year
@@ -405,7 +405,7 @@ Pro Features License Addendum
 Pro-tier features (as marked in documentation) require a valid NotchDeck Pro
 license. While the source code for Pro features is openly available under the
 MIT License above, the *use* of Pro features in a compiled application requires
-a license key obtained from https://notchdeck.com/pro.
+a license key obtained from https://notchdeck.app/pro.
 
 This addendum does not restrict:
 - Reading, studying, or modifying the source code
@@ -521,4 +521,4 @@ Don't prematurely optimize for teams—nail the individual experience first.
 5. Soft launch to 10 beta users, gather feedback
 6. Public launch when act-in-place is solid
 
-Questions? Open a GitHub Discussion or email nav@notchdeck.com
+Questions? Open a GitHub Discussion or email nav@notchdeck.app

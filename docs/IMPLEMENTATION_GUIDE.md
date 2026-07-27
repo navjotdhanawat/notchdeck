@@ -195,7 +195,7 @@ final class NotchController {
             
             HStack(spacing: 12) {
                 Button("Upgrade to Pro") {
-                    NSWorkspace.shared.open(URL(string: "https://notchdeck.com/pro")!)
+                    NSWorkspace.shared.open(URL(string: "https://notchdeck.app/pro")!)
                 }
                 .buttonStyle(.borderedProminent)
                 
@@ -296,7 +296,7 @@ struct PreferencesView: View {
                     }
                     
                     Button("Purchase License") {
-                        NSWorkspace.shared.open(URL(string: "https://notchdeck.com/pro")!)
+                        NSWorkspace.shared.open(URL(string: "https://notchdeck.app/pro")!)
                     }
                     .buttonStyle(.borderedProminent)
                 }
@@ -441,7 +441,7 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
     }
     
     @objc private func showUpgrade() {
-        NSWorkspace.shared.open(URL(string: "https://notchdeck.com/pro")!)
+        NSWorkspace.shared.open(URL(string: "https://notchdeck.app/pro")!)
     }
     
     @objc private func showAbout() {
@@ -474,7 +474,7 @@ NotchDeck is **open source** with a freemium model:
 - **All themes** + custom color schemes
 - Global hotkey & advanced features
 
-[**Try Free**](https://github.com/navjotdhanawat/notchdeck/releases) • [**Upgrade to Pro**](https://notchdeck.com/pro)
+[**Try Free**](https://github.com/navjotdhanawat/notchdeck/releases) • [**Upgrade to Pro**](https://notchdeck.app/pro)
 
 > 🤝 The entire codebase (including Pro features) is open source (MIT). Pro features require a license key to use.
 ```
@@ -520,7 +520,7 @@ Before public launch:
 
 3. **Launch prep**
    - Set up Gumroad product
-   - Create landing page at notchdeck.com/pro
+   - Create landing page at notchdeck.app/pro
    - Write launch blog post
    - Record demo video
 

@@ -28,7 +28,7 @@ public final class LicenseManager: @unchecked Sendable {
     // v1: everything is free. Set to .pro after successful key activation.
     @Published public private(set) var currentTier: Tier = .free
 
-    private let apiBase = "https://notchdeck.com/api/license"
+    private let apiBase = "https://notchdeck.app/api/license"
     private let revalidateInterval: TimeInterval = 7 * 24 * 3600
 
     private init() {

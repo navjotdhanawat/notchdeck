@@ -1,6 +1,6 @@
-# ClaudeNotch — Landing Page (Next.js)
+# NotchDeck — Landing Page (Next.js)
 
-Interactive marketing site for ClaudeNotch.
+Interactive marketing site for NotchDeck.
 
 ## Develop
 ```bash

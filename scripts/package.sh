@@ -4,7 +4,18 @@ set -euo pipefail
 # Make sure we're in the repository root
 cd "$(dirname "$0")/.."
 
-echo "Building NotchDeck in release mode..."
+# Get version from argument, or fallback to git describe, or fallback to 0.1.0
+RAW_VERSION="${1:-}"
+if [ -z "${RAW_VERSION}" ]; then
+    RAW_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.1.0")
+fi
+# Strip leading 'v' if present
+VERSION="${RAW_VERSION#v}"
+
+# Get build version from monotonically increasing git commit count, fallback to 1
+BUILD_NUMBER=$(git rev-list --count HEAD 2>/dev/null || echo "1")
+
+echo "Building NotchDeck version ${VERSION} (build ${BUILD_NUMBER}) in release mode..."
 swift build -c release
 
 # Output dirs
@@ -38,7 +49,7 @@ if [ -f "NotchDeck.icns" ]; then
 fi
 
 echo "Creating Info.plist..."
-cat << 'EOF' > "${CONTENTS_DIR}/Info.plist"
+cat << EOF > "${CONTENTS_DIR}/Info.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -56,9 +67,9 @@ cat << 'EOF' > "${CONTENTS_DIR}/Info.plist"
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.1.0</string>
+    <string>${VERSION}</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>${BUILD_NUMBER}</string>
     <key>CFBundleIconFile</key>
     <string>NotchDeck</string>
     <key>NSAppleEventsUsageDescription</key>

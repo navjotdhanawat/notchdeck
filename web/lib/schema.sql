@@ -16,15 +16,3 @@ CREATE TABLE IF NOT EXISTS waitlist (
   source        TEXT NOT NULL DEFAULT 'landing',  -- 'landing' | 'footer' | 'cta'
   created_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
-
-CREATE TABLE IF NOT EXISTS analytics (
-  id            INTEGER PRIMARY KEY AUTOINCREMENT,
-  ts            TEXT NOT NULL DEFAULT (datetime('now')),
-  country       TEXT,
-  city          TEXT,
-  referrer      TEXT,
-  user_agent    TEXT
-);
-
-CREATE INDEX IF NOT EXISTS idx_analytics_ts      ON analytics(ts);
-CREATE INDEX IF NOT EXISTS idx_analytics_country ON analytics(country);

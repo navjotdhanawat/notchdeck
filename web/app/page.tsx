@@ -13,7 +13,6 @@ import { Support } from "@/components/sections/Support";
 import { Waitlist } from "@/components/sections/Waitlist";
 import { CTA } from "@/components/sections/CTA";
 import { Footer } from "@/components/sections/Footer";
-import { Analytics } from "@/components/Analytics";
 import { DownloadModal } from "@/components/DownloadModal";
 
 export default function Home() {
@@ -23,7 +22,6 @@ export default function Home() {
 
   return (
     <>
-      <Analytics />
       <Nav onDownloadClick={openDownloadModal} />
       <main>
         <Hero onDownloadClick={openDownloadModal} />

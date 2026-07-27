@@ -121,7 +121,7 @@ struct DemoBackdropView: View {
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
 
-                // 4. Glassmorphic Floating Guided Control HUD (Positioned at bottom center, clear of notch)
+                // 4. Native Apple-Grade Guided Tour HUD (Positioned at bottom center, clear of notch)
                 floatingGuidedHUDBar
                     .padding(.bottom, 40)
             }
@@ -130,7 +130,7 @@ struct DemoBackdropView: View {
 
     // MARK: - Theme Studio Dock Bar
     private var themeStudioDock: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             Text("THEMES:")
                 .font(.system(size: 10, weight: .black))
                 .foregroundStyle(Color.white.opacity(0.5))
@@ -168,119 +168,140 @@ struct DemoBackdropView: View {
         )
     }
 
-    // MARK: - Floating Glassmorphic Guided Control HUD
+    // MARK: - Floating Apple-Grade Guided Control HUD
     private var floatingGuidedHUDBar: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 12) {
             if let step = engine.currentStep {
-                HStack(alignment: .center, spacing: 16) {
-                    // Left: Step Counter Badge
-                    VStack(alignment: .leading, spacing: 2) {
-                        HStack(spacing: 6) {
-                            Text("STEP \(step.id + 1) OF \(LiveNotchDemoEngine.steps.count)")
-                                .font(.system(size: 9, weight: .black))
-                                .foregroundStyle(Color.cyan)
-                            Text("•")
-                                .font(.system(size: 10))
-                                .foregroundStyle(Color.white.opacity(0.4))
-                            Text(step.badgeText)
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(Color.white.opacity(0.7))
+                VStack(spacing: 10) {
+                    // Header: Step Progress Dots + Badge
+                    HStack(spacing: 8) {
+                        HStack(spacing: 4) {
+                            ForEach(0..<LiveNotchDemoEngine.steps.count, id: \.self) { idx in
+                                Circle()
+                                    .fill(idx == step.id ? Color.cyan : (idx < step.id ? Color.white.opacity(0.7) : Color.white.opacity(0.2)))
+                                    .frame(width: idx == step.id ? 8 : 6, height: idx == step.id ? 8 : 6)
+                            }
                         }
-                        Text(step.title)
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(Color.white)
+
+                        Text("•")
+                            .font(.system(size: 10))
+                            .foregroundStyle(Color.white.opacity(0.4))
+
+                        Text("GUIDED TOUR — STEP \(step.id + 1) OF \(LiveNotchDemoEngine.steps.count)")
+                            .font(.system(size: 10, weight: .black))
+                            .foregroundStyle(Color.cyan)
+
+                        Spacer()
+
+                        Button {
+                            onExit()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text("Esc")
+                                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                Text("Exit")
+                                    .font(.system(size: 11, weight: .medium))
+                            }
+                            .foregroundStyle(Color.white.opacity(0.6))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 6))
+                        }
+                        .buttonStyle(.plain)
                     }
 
-                    Divider()
-                        .frame(height: 28)
-                        .background(Color.white.opacity(0.15))
+                    // Content Title & Description
+                    HStack(alignment: .top, spacing: 14) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(step.title)
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundStyle(Color.white)
 
-                    // Center: Step Subtitle & Sound Indicator
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(step.subtitle)
-                            .font(.system(size: 11.5, weight: .medium))
-                            .foregroundStyle(Color.white.opacity(0.8))
-                            .lineLimit(2)
-                            .frame(maxWidth: 420, alignment: .leading)
+                            Text(step.subtitle)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(Color.white.opacity(0.8))
+                                .lineSpacing(3)
+                        }
 
+                        Spacer()
+                    }
+
+                    // Interactive Action Hint Bar
+                    HStack(spacing: 8) {
+                        Image(systemName: "lightbulb.fill")
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color.yellow)
+
+                        Text(step.actionHint)
+                            .font(.system(size: 11.5, weight: .semibold))
+                            .foregroundStyle(Color.white.opacity(0.9))
+
+                        Spacer()
+
+                        // Sound Chime Readout
                         if let sound = engine.lastSoundPlayed {
                             HStack(spacing: 4) {
-                                Image(systemName: "speaker.wave.3.fill")
+                                Image(systemName: "speaker.wave.2.fill")
                                     .font(.system(size: 10))
-                                    .foregroundStyle(Color.cyan)
-                                Text("Audio chime: \(sound)")
+                                Text(sound)
                                     .font(.system(size: 10, weight: .bold))
-                                    .foregroundStyle(Color.cyan)
                             }
-                            .transition(.opacity)
+                            .foregroundStyle(Color.cyan)
                         }
                     }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 7)
+                    .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
 
-                    Spacer(minLength: 12)
-
-                    // Right: Play/Pause, Prev, Next, Exit
-                    HStack(spacing: 10) {
+                    // Bottom Navigation Buttons
+                    HStack {
                         Button {
                             engine.prevStage()
                         } label: {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundStyle(Color.white)
-                                .padding(8)
-                                .background(Color.white.opacity(0.12), in: Circle())
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                    .font(.system(size: 11, weight: .bold))
+                                Text("Previous")
+                                    .font(.system(size: 12, weight: .semibold))
+                            }
+                            .foregroundStyle(step.id == 0 ? Color.white.opacity(0.3) : Color.white)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 7)
+                            .background(Color.white.opacity(0.1), in: Capsule())
                         }
                         .buttonStyle(.plain)
                         .disabled(step.id == 0)
 
-                        Button {
-                            engine.togglePause()
-                        } label: {
-                            Image(systemName: engine.isPaused ? "play.fill" : "pause.fill")
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundStyle(Color.white)
-                                .padding(8)
-                                .background(Color.white.opacity(0.12), in: Circle())
-                        }
-                        .buttonStyle(.plain)
+                        Spacer()
 
                         Button {
                             engine.nextStage()
                         } label: {
-                            HStack(spacing: 4) {
-                                Text(step.id == LiveNotchDemoEngine.steps.count - 1 ? "Finish" : "Next")
+                            HStack(spacing: 6) {
+                                Text(step.id == LiveNotchDemoEngine.steps.count - 1 ? "Finish Tour" : "Next Step")
                                     .font(.system(size: 12, weight: .bold))
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 11, weight: .bold))
                             }
                             .foregroundStyle(Color.black)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 7)
-                            .background(Color.cyan, in: Capsule())
-                        }
-                        .buttonStyle(.plain)
-
-                        Button {
-                            onExit()
-                        } label: {
-                            Text("Esc")
-                                .font(.system(size: 11, weight: .bold, design: .monospaced))
-                                .foregroundStyle(Color.white.opacity(0.6))
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 6)
-                                .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 6))
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 8)
+                            .background(
+                                LinearGradient(colors: [Color(hex: 0x4DEEAA), Color(hex: 0x33B1FF)], startPoint: .leading, endPoint: .trailing),
+                                in: Capsule()
+                            )
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 12)
+                .padding(16)
                 .background(
-                    RoundedRectangle(cornerRadius: 18)
-                        .fill(Color.black.opacity(0.75))
-                        .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(Color.white.opacity(0.15), lineWidth: 1))
-                        .shadow(color: .black.opacity(0.6), radius: 20, y: 10)
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.black.opacity(0.8))
+                        .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(Color.white.opacity(0.16), lineWidth: 1))
+                        .shadow(color: .black.opacity(0.6), radius: 24, y: 12)
                 )
-                .frame(maxWidth: 880)
+                .frame(maxWidth: 720)
             }
         }
     }
@@ -296,9 +317,9 @@ struct SimulatedTerminalWindowView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Window Header Bar
             HStack(spacing: 8) {
-                Circle().fill(Color.red.opacity(0.7)).frame(width: 10, height: 10)
-                Circle().fill(Color.yellow.opacity(0.7)).frame(width: 10, height: 10)
-                Circle().fill(Color.green.opacity(0.7)).frame(width: 10, height: 10)
+                Circle().fill(Color.red.opacity(0.8)).frame(width: 10, height: 10)
+                Circle().fill(Color.yellow.opacity(0.8)).frame(width: 10, height: 10)
+                Circle().fill(Color.green.opacity(0.8)).frame(width: 10, height: 10)
 
                 Spacer()
 

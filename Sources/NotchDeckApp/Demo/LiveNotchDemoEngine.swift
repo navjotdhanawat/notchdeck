@@ -7,6 +7,7 @@ public struct GuidedScenarioStep: Equatable {
     public let id: Int
     public let title: String
     public let subtitle: String
+    public let actionHint: String
     public let badgeText: String
 }
 
@@ -26,7 +27,6 @@ final class LiveNotchDemoEngine: ObservableObject {
     @Published private(set) var isRunning: Bool = false
     @Published private(set) var currentStepIndex: Int = 0
     @Published private(set) var currentStep: GuidedScenarioStep?
-    @Published private(set) var isPaused: Bool = false
     @Published private(set) var activeFocusSessionKey: String = "demo-s1"
     @Published private(set) var jumpFocusEffect: Bool = false
     @Published private(set) var lastSoundPlayed: String? = nil
@@ -40,44 +40,50 @@ final class LiveNotchDemoEngine: ObservableObject {
     private var backdropWindow: DemoBackdropWindow?
 
     private var originalThemeID: String = "graphite"
-    private var timer: Timer?
+    private var tokenTickerTimer: Timer?
     private var tickCount: Int = 0
 
     public static let steps: [GuidedScenarioStep] = [
         GuidedScenarioStep(
             id: 0,
-            title: "Multi-Agent Glanceable Command Deck",
-            subtitle: "Monitor active Claude Code & Codex sessions right in your MacBook notch with live token consumption and cost tracking.",
-            badgeText: "Glanceable Status"
+            title: "Live Multi-Agent Command Deck",
+            subtitle: "NotchDeck turns your MacBook notch into a live status dashboard for active Claude Code & Codex sessions.",
+            actionHint: "Hover your cursor over the top notch to expand the status deck",
+            badgeText: "Session Monitoring"
         ),
         GuidedScenarioStep(
             id: 1,
             title: "In-Notch Tool Permission Workflows",
-            subtitle: "Approve or deny sensitive tool executions (Bash, Git, Edit) directly from notch cards without breaking your context.",
+            subtitle: "When an agent requests command execution (Bash, Git, Edit), a card expands right in your notch.",
+            actionHint: "Click 'Allow Once' or 'Deny' directly on the notch card above",
             badgeText: "Tool Permission"
         ),
         GuidedScenarioStep(
             id: 2,
-            title: "In-Notch Agent Prompt Questions",
-            subtitle: "Select migration choices or answer agent questions right inside the notch with instant state updates.",
-            badgeText: "Agent Prompts"
+            title: "Interactive Agent Questions",
+            subtitle: "Answer multi-choice prompt questions directly from the notch without switching away from your active code.",
+            actionHint: "Select an option on the notch card to send your answer",
+            badgeText: "Prompt Questions"
         ),
         GuidedScenarioStep(
             id: 3,
             title: "Implementation Plan Approval",
-            subtitle: "Review proposed step-by-step implementation plans and code diffs directly from the expanded notch card.",
+            subtitle: "Review proposed architectural changes and step-by-step code diffs inside the expanded notch card.",
+            actionHint: "Click 'Approve Plan' or 'Request Changes' on the card",
             badgeText: "Plan Review"
         ),
         GuidedScenarioStep(
             id: 4,
             title: "One-Click Terminal Jump Precision",
-            subtitle: "Click any session card in the notch to instantly raise and focus its exact terminal window and pane (iTerm2, WezTerm, Kitty).",
+            subtitle: "Click any session card in the notch to instantly focus its exact terminal window and pane across iTerm2, WezTerm, or Kitty.",
+            actionHint: "Click a session row or terminal window below to test focus jumping",
             badgeText: "Click-To-Jump"
         ),
         GuidedScenarioStep(
             id: 5,
-            title: "10 Curated Themes & Sound Effects",
-            subtitle: "Personalize your notch deck with modern color palettes and distinct audio completion feedback.",
+            title: "10 Curated Themes & Audio Chimes",
+            subtitle: "Customize your command deck's look with vibrant HSL color palettes and distinct audio feedback for completions and failures.",
+            actionHint: "Select a theme pill below to recolor the notch deck live",
             badgeText: "Theme & Sound Studio"
         )
     ]
@@ -96,11 +102,10 @@ final class LiveNotchDemoEngine: ObservableObject {
 
         isRunning = true
         currentStepIndex = 0
-        isPaused = false
 
         setupDemoTerminalWindows()
 
-        // Wire notch clicks
+        // Wire notch interactions
         notchController.onJump = { [weak self] session in
             Task { @MainActor in self?.triggerTerminalJump(session.key) }
         }
@@ -108,7 +113,7 @@ final class LiveNotchDemoEngine: ObservableObject {
             Task { @MainActor in self?.handleNotchDecision(request, decision: decision) }
         }
 
-        // Show fullscreen backdrop canvas
+        // Show native full desktop wallpaper window
         let backdrop = DemoBackdropWindow(
             engine: self,
             onExit: { [weak self] in
@@ -124,8 +129,8 @@ final class LiveNotchDemoEngine: ObservableObject {
 
     func stopDemo() {
         guard isRunning else { return }
-        timer?.invalidate()
-        timer = nil
+        tokenTickerTimer?.invalidate()
+        tokenTickerTimer = nil
 
         backdropWindow?.closeWindow()
         backdropWindow = nil
@@ -138,10 +143,6 @@ final class LiveNotchDemoEngine: ObservableObject {
         notchController?.update(pending: [])
 
         isRunning = false
-    }
-
-    func togglePause() {
-        isPaused.toggle()
     }
 
     func nextStage() {
@@ -164,7 +165,7 @@ final class LiveNotchDemoEngine: ObservableObject {
             let theme = themeStore.select(id: themeID)
             notchController?.setPalette(theme.palette)
             soundPlayer?.play(.soundDone)
-            lastSoundPlayed = "Glass (Done Chime)"
+            lastSoundPlayed = "Glass (Completion Chime)"
         }
     }
 
@@ -172,9 +173,9 @@ final class LiveNotchDemoEngine: ObservableObject {
         activeFocusSessionKey = sessionKey
         jumpFocusEffect = true
         soundPlayer?.play(.soundDone)
-        lastSoundPlayed = "Glass (Jump Sound)"
+        lastSoundPlayed = "Glass (Jump Chime)"
         Task {
-            try? await Task.sleep(nanoseconds: 700_000_000)
+            try? await Task.sleep(nanoseconds: 600_000_000)
             jumpFocusEffect = false
         }
     }
@@ -216,10 +217,10 @@ final class LiveNotchDemoEngine: ObservableObject {
         ]
     }
 
-    private func runStage(_ index: Int) {
+    func runStage(_ index: Int) {
         currentStepIndex = index
         currentStep = Self.steps[index]
-        timer?.invalidate()
+        tokenTickerTimer?.invalidate()
 
         switch index {
         case 0:
@@ -277,22 +278,19 @@ final class LiveNotchDemoEngine: ObservableObject {
         notchController?.update([session1, session2])
         notchController?.update(pending: [])
 
+        // Token tick up (no auto-advancing stage timer)
         tickCount = 0
-        timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+        tokenTickerTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { [weak self] _ in
             Task { @MainActor in
-                guard let self, !self.isPaused else { return }
+                guard let self else { return }
                 self.tickCount += 1
                 var s1 = session1
                 s1.usage = SessionUsage(
                     model: "claude-sonnet-5",
-                    tokens: TokenUsage(input: 42_100 + (self.tickCount * 1800), output: 8_400 + (self.tickCount * 420)),
+                    tokens: TokenUsage(input: 42_100 + (self.tickCount * 1400), output: 8_400 + (self.tickCount * 300)),
                     costUSD: 0.16 + (Double(self.tickCount) * 0.015)
                 )
                 self.notchController?.update([s1, session2])
-
-                if self.tickCount >= 3 {
-                    self.nextStage()
-                }
             }
         }
     }
@@ -309,13 +307,6 @@ final class LiveNotchDemoEngine: ObservableObject {
             receivedAt: Date()
         )
         notchController?.update(pending: [req])
-
-        timer = Timer.scheduledTimer(withTimeInterval: 5.5, repeats: false) { [weak self] _ in
-            Task { @MainActor in
-                guard let self, !self.isPaused else { return }
-                self.nextStage()
-            }
-        }
     }
 
     // MARK: - Stage 2: Question Card
@@ -336,13 +327,6 @@ final class LiveNotchDemoEngine: ObservableObject {
             receivedAt: Date()
         )
         notchController?.update(pending: [req])
-
-        timer = Timer.scheduledTimer(withTimeInterval: 5.5, repeats: false) { [weak self] _ in
-            Task { @MainActor in
-                guard let self, !self.isPaused else { return }
-                self.nextStage()
-            }
-        }
     }
 
     // MARK: - Stage 3: Plan Approval Card
@@ -359,52 +343,17 @@ final class LiveNotchDemoEngine: ObservableObject {
             receivedAt: Date()
         )
         notchController?.update(pending: [req])
-
-        timer = Timer.scheduledTimer(withTimeInterval: 5.5, repeats: false) { [weak self] _ in
-            Task { @MainActor in
-                guard let self, !self.isPaused else { return }
-                self.nextStage()
-            }
-        }
     }
 
     // MARK: - Stage 4: Click-to-Jump Terminal Focus
     private func stageTerminalJump() {
         notchController?.update(pending: [])
         triggerTerminalJump("demo-s1")
-
-        timer = Timer.scheduledTimer(withTimeInterval: 4.5, repeats: false) { [weak self] _ in
-            Task { @MainActor in
-                guard let self, !self.isPaused else { return }
-                self.nextStage()
-            }
-        }
     }
 
     // MARK: - Stage 5: Theme Carousel & Studio
     private func stageThemeAndSoundStudio() {
         notchController?.update(pending: [])
-        let demoThemes = ["midnight", "nord", "catppuccin", "tokyo-night", "matrix", "graphite"]
-        var idx = 0
-
-        timer = Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                guard let self, !self.isPaused else { return }
-                if idx < demoThemes.count {
-                    self.selectTheme(demoThemes[idx])
-                    idx += 1
-                } else {
-                    self.soundPlayer?.play(.soundDone)
-                    self.lastSoundPlayed = "Glass (Completion Chime)"
-                    self.timer?.invalidate()
-
-                    // Auto-finish after 3 seconds
-                    self.timer = Timer.scheduledTimer(withTimeInterval: 3.5, repeats: false) { [weak self] _ in
-                        Task { @MainActor in self?.stopDemo() }
-                    }
-                }
-            }
-        }
     }
 
     private func handleNotchDecision(_ request: DecisionRequest, decision: Decision) {

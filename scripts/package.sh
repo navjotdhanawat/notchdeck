@@ -69,7 +69,23 @@ xattr -dr com.apple.quarantine "${APP_DIR}" 2>/dev/null || true
 
 echo "Creating DMG..."
 rm -f NotchDeck.dmg
-hdiutil create -volname "NotchDeck" -srcfolder "${APP_DIR}" -ov -format UDZO NotchDeck.dmg
+
+# Create a temporary folder for the DMG contents
+TEMP_DMG_DIR="dmg_temp"
+rm -rf "${TEMP_DMG_DIR}"
+mkdir -p "${TEMP_DMG_DIR}"
+
+# Copy the app to the temp folder
+cp -R "${APP_DIR}" "${TEMP_DMG_DIR}/"
+
+# Create a symlink to Applications folder
+ln -s /Applications "${TEMP_DMG_DIR}/Applications"
+
+# Create the DMG using the temp folder as source
+hdiutil create -volname "NotchDeck" -srcfolder "${TEMP_DMG_DIR}" -ov -format UDZO NotchDeck.dmg
+
+# Clean up temp folder
+rm -rf "${TEMP_DMG_DIR}"
 
 echo "NotchDeck.dmg created successfully!"
 

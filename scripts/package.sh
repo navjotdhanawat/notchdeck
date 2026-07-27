@@ -12,15 +12,25 @@ APP_DIR="NotchDeck.app"
 CONTENTS_DIR="${APP_DIR}/Contents"
 MACOS_DIR="${CONTENTS_DIR}/MacOS"
 RESOURCES_DIR="${CONTENTS_DIR}/Resources"
+FRAMEWORKS_DIR="${CONTENTS_DIR}/Frameworks"
 
 # Clear any old app folder
 rm -rf "${APP_DIR}"
 mkdir -p "${MACOS_DIR}"
 mkdir -p "${RESOURCES_DIR}"
+mkdir -p "${FRAMEWORKS_DIR}"
 
 echo "Packaging binaries..."
 cp .build/release/NotchDeckApp "${MACOS_DIR}/"
 cp .build/release/notch-bridge "${MACOS_DIR}/"
+
+SPARKLE_FW=$(find .build -name "Sparkle.framework" -type d | grep "release" | head -n 1)
+if [ -n "${SPARKLE_FW}" ]; then
+    echo "Adding Sparkle framework from ${SPARKLE_FW}..."
+    cp -R "${SPARKLE_FW}" "${FRAMEWORKS_DIR}/"
+    cp -R "${SPARKLE_FW}" "${MACOS_DIR}/"
+    install_name_tool -add_rpath "@executable_path/../Frameworks" "${MACOS_DIR}/NotchDeckApp" 2>/dev/null || true
+fi
 
 if [ -f "NotchDeck.icns" ]; then
     echo "Adding app icon..."

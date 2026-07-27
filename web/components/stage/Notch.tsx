@@ -91,22 +91,27 @@ export function Notch({
 
         {/* session list + act-card overlay slot */}
         <div className="relative px-[14px] pb-[16px] pt-[12px]">
-          <AnimatePresence initial={false}>
-            {sessions.map((s) => (
-              <SessionRow
-                key={s.id}
-                session={s}
-                compact={true}
-                onJump={onJump}
-              />
-            ))}
-          </AnimatePresence>
-          {sessions.length === 0 && (
-            <div className="px-2 py-6 text-center text-[12px] text-text-secondary">
-              No active sessions
-            </div>
+          {sessions.some((s) => s.act) ? (
+            children
+          ) : (
+            <>
+              <AnimatePresence initial={false}>
+                {sessions.map((s) => (
+                  <SessionRow
+                    key={s.id}
+                    session={s}
+                    compact={true}
+                    onJump={onJump}
+                  />
+                ))}
+              </AnimatePresence>
+              {sessions.length === 0 && (
+                <div className="px-2 py-6 text-center text-[12px] text-text-secondary">
+                  No active sessions
+                </div>
+              )}
+            </>
           )}
-          {children}
         </div>
       </div>
     </div>

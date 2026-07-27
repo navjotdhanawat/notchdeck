@@ -71,6 +71,8 @@ cat << 'EOF' > "${CONTENTS_DIR}/Info.plist"
     <true/>
     <key>SUFeedURL</key>
     <string>https://raw.githubusercontent.com/navjotdhanawat/notchdeck/main/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>ws4PP72vXmpWRfyh2LXpiFfuFOZFXuF1BlfhO6qDfCo=</string>
     <key>SUEnableAutomaticChecks</key>
     <true/>
     <key>SUScheduledCheckInterval</key>

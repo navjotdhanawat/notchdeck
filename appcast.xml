@@ -13,6 +13,8 @@
                 url="https://github.com/navjotdhanawat/notchdeck/releases/download/v0.2.0/NotchDeck.dmg"
                 sparkle:version="2"
                 sparkle:shortVersionString="0.2.0"
+                sparkle:edSignature="QqRe71xVO0YNOiX0KgjNdQUGrlh6Mw1WIZuV+wADyiMxX+5I04WzOFGU2omYHnr9iL3cmNbTKQ4dc/cYxtg4CQ=="
+                length="3408133"
                 type="application/octet-stream" />
         </item>
     </channel>

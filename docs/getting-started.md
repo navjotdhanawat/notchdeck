@@ -9,9 +9,30 @@
 
 ## Installation
 
-> 📦 Pre-built releases coming soon. For now, build from source.
+### Option 1 — Homebrew Cask (Recommended)
 
-### Build from Source
+```bash
+brew install navjotdhanawat/notchdeck/notchdeck
+```
+*(Or tap first: `brew tap navjotdhanawat/notchdeck && brew install notchdeck`)*
+
+### Option 2 — Terminal One-Liner (curl)
+
+```bash
+curl -fsSL https://notchdeck.app/api/install | bash
+```
+*Or via GitHub raw:*
+```bash
+curl -fsSL https://raw.githubusercontent.com/navjotdhanawat/notchdeck/main/install.sh | bash
+```
+
+### Option 3 — Download DMG Image
+
+1. Download `NotchDeck.dmg` from [notchdeck.app](https://notchdeck.app) or [GitHub Releases](https://github.com/navjotdhanawat/notchdeck/releases)
+2. Double-click `NotchDeck.dmg` and drag `NotchDeck.app` into `/Applications`
+3. Launch `NotchDeck`
+
+### Option 4 — Build from Source
 
 ```bash
 git clone https://github.com/navjotdhanawat/notchdeck.git
@@ -19,7 +40,8 @@ cd notchdeck
 swift build -c release
 ```
 
-Copy the built app to your Applications folder and launch it.
+Copy `.build/release/NotchDeckApp` and `.build/release/notch-bridge` to `NotchDeck.app/Contents/MacOS/` (or use `./scripts/package.sh`).
+
 
 ## First Run
 

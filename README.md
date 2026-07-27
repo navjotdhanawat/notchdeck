@@ -84,13 +84,30 @@ Running 4 parallel Claude Code sessions? Spinning up a Codex CLI job while Claud
 
 ### Install
 
-**Option A — Download DMG (easiest)**
+**Option A — Homebrew Cask (Recommended)**
 
-1. Download `NotchDeck.dmg` from the [Releases page](https://github.com/navjotdhanawat/notchdeck/releases)
+```bash
+brew install navjotdhanawat/notchdeck/notchdeck
+```
+*(Or tap first: `brew tap navjotdhanawat/notchdeck && brew install notchdeck`)*
+
+**Option B — Terminal One-Liner (curl)**
+
+```bash
+curl -fsSL https://notchdeck.app/api/install | bash
+```
+*Or via GitHub raw:*
+```bash
+curl -fsSL https://raw.githubusercontent.com/navjotdhanawat/notchdeck/main/install.sh | bash
+```
+
+**Option C — Download DMG**
+
+1. Download `NotchDeck.dmg` from the [Releases page](https://github.com/navjotdhanawat/notchdeck/releases) or [notchdeck.app](https://notchdeck.app)
 2. Open the `.dmg` and drag **NotchDeck.app** to `/Applications`
 3. Launch NotchDeck
 
-> **macOS Gatekeeper note:** NotchDeck is not yet signed with an Apple Developer certificate, so macOS will block it on first launch with *"NotchDeck can't be opened because it is from an unidentified developer."*
+> **macOS Gatekeeper note:** NotchDeck is not yet signed with an Apple Developer certificate, so macOS will block DMG/ad-hoc installations on first launch with *"NotchDeck can't be opened because it is from an unidentified developer."*
 >
 > To open it anyway:
 > 1. In **Finder**, right-click (or Control-click) **NotchDeck.app** → **Open**
@@ -99,7 +116,7 @@ Running 4 parallel Claude Code sessions? Spinning up a Codex CLI job while Claud
 > You only need to do this once. After that, it launches normally.
 > Alternatively: **System Settings → Privacy & Security → scroll down → click "Open Anyway"**
 
-**Option B — Build from source**
+**Option D — Build from source**
 
 ```bash
 git clone https://github.com/navjotdhanawat/notchdeck.git

@@ -38,3 +38,8 @@ web/.env.*.local
 .env
 .env.local
 .env.*.local
+
+# Private keys & raw scratch
+*.pem
+raw/
+

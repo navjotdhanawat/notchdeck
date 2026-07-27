@@ -8,9 +8,24 @@ final class NotchViewModel: ObservableObject {
     @Published var now: Date = Date()
     @Published var notice: String?
     @Published var palette: Palette = .graphite
+    @Published var pixelArtEnabled: Bool = UserDefaults.standard.object(forKey: "notch.pixelArtEnabled") as? Bool ?? true
+    @Published var animationTheme: AnimationTheme = {
+        let saved = UserDefaults.standard.string(forKey: "notch.animationTheme") ?? "lego"
+        return AnimationTheme(rawValue: saved) ?? .lego
+    }()
     var onJump: ((Session) -> Void)?
     var onDecide: ((DecisionRequest, Decision) -> Void)?
     var onAnswerInTerminal: ((DecisionRequest) -> Void)?
+
+    func togglePixelArt() {
+        pixelArtEnabled.toggle()
+        UserDefaults.standard.set(pixelArtEnabled, forKey: "notch.pixelArtEnabled")
+    }
+
+    func selectAnimationTheme(_ theme: AnimationTheme) {
+        animationTheme = theme
+        UserDefaults.standard.set(theme.rawValue, forKey: "notch.animationTheme")
+    }
 }
 
 extension SessionState {
@@ -89,6 +104,8 @@ struct NotchExpandedView: View {
                     request: req,
                     session: vm.sessions.first { $0.key == req.sessionKey },
                     remaining: vm.pendingDecisions.count - 1,
+                    pixelArtEnabled: vm.pixelArtEnabled,
+                    animationTheme: vm.animationTheme,
                     onDecide: vm.onDecide,
                     onAnswerInTerminal: vm.onAnswerInTerminal)
             } else {
@@ -110,7 +127,7 @@ struct NotchExpandedView: View {
             } else {
                 UsageHeader(sessions: vm.sessions)
                 ForEach(vm.sessions) { s in
-                    Button { vm.onJump?(s) } label: { SessionRow(session: s, now: vm.now) }
+                    Button { vm.onJump?(s) } label: { SessionRow(session: s, now: vm.now, pixelArtEnabled: vm.pixelArtEnabled, theme: vm.animationTheme) }
                         .buttonStyle(.plain)
                 }
             }
@@ -122,6 +139,8 @@ struct NotchExpandedView: View {
 struct SessionRow: View {
     let session: Session
     let now: Date
+    let pixelArtEnabled: Bool
+    let theme: AnimationTheme
     @Environment(\.palette) private var palette
 
     /// State-aware activity text: a done session invites the click-to-jump; otherwise the live action.
@@ -134,10 +153,13 @@ struct SessionRow: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Circle().fill(palette.dot(for: session.state)).frame(width: 9, height: 9)
-                .shadow(color: palette.dot(for: session.state).opacity(0.5), radius: 4)
-                .padding(.top, 4)
+        HStack(alignment: .center, spacing: 12) {
+            if pixelArtEnabled {
+                AnimatedPixelArtView(state: session.state, size: 32, theme: theme)
+            } else {
+                Circle().fill(palette.dot(for: session.state)).frame(width: 9, height: 9)
+                    .shadow(color: palette.dot(for: session.state).opacity(0.5), radius: 4)
+            }
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 6) {
                     Text(session.projectName).font(.system(size: 14, weight: .semibold))
@@ -148,6 +170,10 @@ struct SessionRow: View {
                 }
                 if let activity = activityText {
                     ActivityLine(text: activity, accent: session.state.surfaceAccent)
+                }
+                if pixelArtEnabled, let usage = session.usage, usage.tokens.total > 0 {
+                    PixelGaugeView(tokens: usage.tokens)
+                        .padding(.top, 2)
                 }
             }
             Spacer(minLength: 8)
@@ -213,10 +239,10 @@ struct NotchCompactView: View {
         let done = vm.sessions.filter { $0.state == .done }.count
         let failed = vm.sessions.filter { $0.state == .failed }.count
         HStack(spacing: 9) {
-            if waiting > 0 { CountDot(accent: .permission, count: waiting) }
-            if working > 0 { CountDot(accent: .working,    count: working) }
-            if done > 0    { CountDot(accent: .done,       count: done) }
-            if failed > 0  { CountDot(accent: .failed,     count: failed) }
+            if waiting > 0 { CountDot(accent: .permission, count: waiting, pixelArtEnabled: vm.pixelArtEnabled, theme: vm.animationTheme) }
+            if working > 0 { CountDot(accent: .working,    count: working, pixelArtEnabled: vm.pixelArtEnabled, theme: vm.animationTheme) }
+            if done > 0    { CountDot(accent: .done,       count: done, pixelArtEnabled: vm.pixelArtEnabled, theme: vm.animationTheme) }
+            if failed > 0  { CountDot(accent: .failed,     count: failed, pixelArtEnabled: vm.pixelArtEnabled, theme: vm.animationTheme) }
         }
         .padding(.horizontal, 8)
         .environment(\.palette, vm.palette)
@@ -227,11 +253,30 @@ struct NotchCompactView: View {
 struct CountDot: View {
     let accent: Accent
     let count: Int
+    let pixelArtEnabled: Bool
+    let theme: AnimationTheme
     @Environment(\.palette) private var palette
+
+    private var state: SessionState {
+        switch accent {
+        case .permission: return .needsPermission
+        case .question: return .needsInput
+        case .working: return .working
+        case .done: return .done
+        case .failed: return .failed
+        default: return .ended
+        }
+    }
+
     var body: some View {
         HStack(spacing: 4) {
-            Circle().fill(palette.accent(accent)).frame(width: 7, height: 7)
-                .shadow(color: palette.accent(accent).opacity(0.6), radius: 3)
+            if pixelArtEnabled {
+                AnimatedPixelArtView(state: state, size: 16, theme: theme)
+                    .offset(y: 1)
+            } else {
+                Circle().fill(palette.accent(accent)).frame(width: 7, height: 7)
+                    .shadow(color: palette.accent(accent).opacity(0.6), radius: 3)
+            }
             Text("\(count)").font(.system(size: 12, weight: .semibold)).foregroundStyle(palette.textPrimary)
         }
     }
@@ -241,6 +286,8 @@ struct DecisionCardView: View {
     let request: DecisionRequest
     let session: Session?
     let remaining: Int
+    let pixelArtEnabled: Bool
+    let animationTheme: AnimationTheme
     var onDecide: ((DecisionRequest, Decision) -> Void)?
     var onAnswerInTerminal: ((DecisionRequest) -> Void)?
     @Environment(\.palette) private var palette
@@ -248,7 +295,7 @@ struct DecisionCardView: View {
     var body: some View {
         CardContainer {
             VStack(alignment: .leading, spacing: 10) {
-                AccentStrip(title: stripTitle, accent: request.kind.accent)
+                AccentStrip(title: stripTitle, accent: request.kind.accent, pixelArtEnabled: pixelArtEnabled, theme: animationTheme)
                 SessionContextStrip(session: session)
                 bodyContent
                 footer

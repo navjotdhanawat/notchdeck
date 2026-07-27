@@ -254,7 +254,7 @@ final class LiveNotchDemoEngine: ObservableObject {
             currentTool: "Edit",
             currentAction: "Refactoring NavigationBar.tsx",
             stateSince: now.addingTimeInterval(-35),
-            usage: SessionUsage(model: "claude-sonnet-5", tokens: TokenUsage(input: 42_100, output: 8_400), costUSD: 0.16),
+            usage: SessionUsage(model: "claude-sonnet-5", tokens: TokenUsage(input: 22_100, output: 8_400, cacheCreation: 5_000, cacheRead: 15_000), costUSD: 0.16),
             startedAt: now.addingTimeInterval(-120),
             lastEventAt: now
         )
@@ -270,7 +270,7 @@ final class LiveNotchDemoEngine: ObservableObject {
             currentTool: nil,
             currentAction: "Done — click to jump",
             stateSince: now.addingTimeInterval(-10),
-            usage: SessionUsage(model: "gpt-4o", tokens: TokenUsage(input: 112_000, output: 14_200), costUSD: 0.38),
+            usage: SessionUsage(model: "gpt-4o", tokens: TokenUsage(input: 32_000, output: 14_200, cacheCreation: 10_000, cacheRead: 70_000), costUSD: 0.38),
             startedAt: now.addingTimeInterval(-300),
             lastEventAt: now.addingTimeInterval(-10)
         )
@@ -287,7 +287,12 @@ final class LiveNotchDemoEngine: ObservableObject {
                 var s1 = session1
                 s1.usage = SessionUsage(
                     model: "claude-sonnet-5",
-                    tokens: TokenUsage(input: 42_100 + (self.tickCount * 1400), output: 8_400 + (self.tickCount * 300)),
+                    tokens: TokenUsage(
+                        input: 22_100 + (self.tickCount * 800),
+                        output: 8_400 + (self.tickCount * 300),
+                        cacheCreation: 5_000 + (self.tickCount * 100),
+                        cacheRead: 15_000 + (self.tickCount * 500)
+                    ),
                     costUSD: 0.16 + (Double(self.tickCount) * 0.015)
                 )
                 self.notchController?.update([s1, session2])

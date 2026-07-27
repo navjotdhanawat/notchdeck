@@ -1,7 +1,11 @@
 "use client";
+import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { AgentId, Session, SessionState } from "@/lib/types";
 import { Badge } from "@/components/ui/Badge";
+import { AnimatedPixelArt } from "@/components/stage/PixelArt";
+import { PixelGauge } from "@/components/stage/PixelGauge";
+import { useTheme } from "@/lib/theme-context";
 
 /** Notch/panel body reads as native macOS, not the page serif. */
 const SYS =
@@ -43,6 +47,12 @@ export function SessionRow({
   compact?: boolean;
   onJump?: (id: string) => void;
 }) {
+  const { pixelArtEnabled, animationTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const reduce = useReducedMotion();
   const tint = STATE_TINT[session.state];
   const isWorking = session.state === "working";
@@ -82,32 +92,43 @@ export function SessionRow({
       onKeyDown={clickable ? onKeyDown : undefined}
       style={{ fontFamily: SYS }}
       className={[
-        "flex h-[36px] items-center gap-[11px] rounded-xl px-2 transition-colors",
+        "flex items-center gap-[12px] rounded-xl px-2 transition-colors",
+        compact ? "h-[36px]" : "min-h-[48px] py-[6px]",
         clickable ? "cursor-pointer" : "cursor-default",
         "hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/70",
       ].join(" ")}
     >
-      {/* live state dot — glow + pulse come from the state tint */}
-      <motion.span
-        aria-hidden
-        className={`${tint} mx-[3px] flex-none rounded-full bg-current`}
-        style={{
-          width: 9,
-          height: 9,
-          marginTop: compact ? 0 : 5,
-          boxShadow: "0 0 8px currentColor",
-        }}
-        animate={
-          isWorking && !reduce
-            ? { opacity: [1, 0.4, 1], scale: [1, 0.82, 1] }
-            : { opacity: 1, scale: 1 }
-        }
-        transition={
-          isWorking && !reduce
-            ? { duration: 1.4, repeat: Infinity, ease: "easeInOut" }
-            : { duration: 0 }
-        }
-      />
+      {/* live state dot / anim pixel art avatar */}
+      {mounted && pixelArtEnabled ? (
+        <div className={`flex-none ${compact ? "translate-y-[1px]" : ""}`}>
+          <AnimatedPixelArt
+            state={session.state}
+            size={compact ? 16 : 32}
+            theme={animationTheme}
+          />
+        </div>
+      ) : (
+        <motion.span
+          aria-hidden
+          className={`${tint} mx-[3px] flex-none rounded-full bg-current`}
+          style={{
+            width: 9,
+            height: 9,
+            marginTop: compact ? 0 : 5,
+            boxShadow: "0 0 8px currentColor",
+          }}
+          animate={
+            isWorking && !reduce
+              ? { opacity: [1, 0.4, 1], scale: [1, 0.82, 1] }
+              : { opacity: 1, scale: 1 }
+          }
+          transition={
+            isWorking && !reduce
+              ? { duration: 1.4, repeat: Infinity, ease: "easeInOut" }
+              : { duration: 0 }
+          }
+        />
+      )}
 
       {compact ? (
         <>
@@ -128,6 +149,9 @@ export function SessionRow({
             <div className={`mt-[3px] truncate text-[12px] font-medium ${tint}`}>
               {session.activity}
             </div>
+            {mounted && pixelArtEnabled && session.usage && (
+              <PixelGauge tokens={session.usage.tokens} />
+            )}
           </div>
           <div className="flex flex-none flex-col items-end gap-[6px]">
             <div className="flex gap-[6px]">{badges}</div>

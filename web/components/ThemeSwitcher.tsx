@@ -14,7 +14,7 @@ const SYS =
  * recolor + persist). Closes on outside-click/Escape; keyboard navigable.
  */
 export function ThemeSwitcher() {
-  const { themeId, setTheme } = useTheme();
+  const { themeId, setTheme, pixelArtEnabled, setPixelArtEnabled, animationTheme, setAnimationTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -114,8 +114,9 @@ export function ThemeSwitcher() {
           ref={dropdownRef}
           role="menu"
           className="absolute right-0 top-full mt-1.5 z-50 w-[200px] overflow-auto rounded-md border border-white/12 bg-black/85 py-1 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)] backdrop-blur-md"
-          style={{ maxHeight: "320px" }}
+          style={{ maxHeight: "440px" }}
         >
+          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-text-secondary select-none">Notch Theme</div>
           {THEME_ORDER.map((id, idx) => {
             const palette = PALETTES[id];
             const active = id === themeId;
@@ -165,6 +166,61 @@ export function ThemeSwitcher() {
               </button>
             );
           })}
+
+          <div className="my-1 border-t border-white/12" />
+
+          {/* Toggle for Pixel animations option */}
+          <button
+            type="button"
+            role="menuitem"
+            className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[12px] text-text-primary hover:bg-white/10 transition focus:outline-none"
+            onClick={() => setPixelArtEnabled(!pixelArtEnabled)}
+          >
+            <span className="flex-1 font-medium">Pixel Animations</span>
+            <input
+              type="checkbox"
+              checked={pixelArtEnabled}
+              onChange={() => {}}
+              className="accent-accent pointer-events-none"
+              style={{ width: "12px", height: "12px" }}
+            />
+          </button>
+
+          {/* List of animation style sprite options */}
+          {pixelArtEnabled && (
+            <>
+              <div className="my-1 border-t border-white/12" />
+              <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-text-secondary select-none">Sprite Theme</div>
+              {(["lego", "pacman", "pokemon", "mario", "space"] as const).map((tId) => {
+                const name = {
+                  lego: "Lego Builder",
+                  pacman: "Retro Arcade",
+                  pokemon: "Pocket Monsters",
+                  mario: "Super Mario",
+                  space: "Space Invaders",
+                }[tId];
+                const isSelected = animationTheme === tId;
+                return (
+                  <button
+                    key={tId}
+                    type="button"
+                    role="menuitem"
+                    className={`flex w-full items-center gap-2.5 px-3 py-1.5 text-left text-[12px] transition ${
+                      isSelected ? "bg-white/10 text-text-primary" : "text-text-secondary hover:bg-white/5"
+                    } focus:outline-none`}
+                    onClick={() => setAnimationTheme(tId)}
+                  >
+                    <span className="flex-1 pl-1">{name}</span>
+                    {isSelected && (
+                      <span aria-hidden className="flex-none text-accent text-[11px]">
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </>
+          )}
         </div>
       )}
     </div>

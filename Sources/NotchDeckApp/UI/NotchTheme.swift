@@ -16,7 +16,7 @@ enum NotchMetric {
     /// Expanded panel width — drives both the decision card and the glance list so the
     /// notch never resizes between the two. Wide enough that dense content (permission
     /// diffs, plan text, multi-line option descriptions) doesn't wrap into a tall column.
-    static let panelWidth: CGFloat = 440
+    static let panelWidth: CGFloat = 500
 }
 
 /// Friendly display name for an agent badge, keyed by `Session.agentID`.

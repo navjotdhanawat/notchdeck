@@ -62,6 +62,9 @@ const BEATS: Array<(s: Session[]) => Session[]> = [
       activity: "Plan ready · review",
       elapsedMin: 2,
       act: ACT_FIXTURES.plan,
+      usage: {
+        tokens: { input: 8200, output: 2100, cacheCreation: 1000, cacheRead: 4000, total: 15300 }
+      }
     }),
   // 4 — Claude asks a follow-up (deployment target).
   (s) =>

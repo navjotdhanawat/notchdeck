@@ -208,6 +208,7 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
 
     private var statusItem: NSStatusItem?
     private var themeMenu: NSMenu?
+    private var animThemeMenu: NSMenu?
     private var licenseMenuItem: NSMenuItem?
 
     private func setupMenuBar() {
@@ -225,6 +226,10 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         soundItem.state = sound.enabled ? .on : .off
         menu.addItem(soundItem)
 
+        let pixelArtItem = NSMenuItem(title: "Pixel Art Animations", action: #selector(togglePixelArt), keyEquivalent: "")
+        pixelArtItem.state = notch.isPixelArtEnabled ? .on : .off
+        menu.addItem(pixelArtItem)
+
         let themeItem = NSMenuItem(title: "Theme", action: nil, keyEquivalent: "")
         let themeMenu = NSMenu()
         for theme in themeStore.all {
@@ -237,6 +242,19 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         themeItem.submenu = themeMenu
         menu.addItem(themeItem)
         self.themeMenu = themeMenu
+
+        let animThemeItem = NSMenuItem(title: "Animation Theme", action: nil, keyEquivalent: "")
+        let animThemeMenu = NSMenu()
+        for animTheme in AnimationTheme.allCases {
+            let ti = NSMenuItem(title: animTheme.name, action: #selector(selectAnimationTheme(_:)), keyEquivalent: "")
+            ti.target = self
+            ti.representedObject = animTheme.rawValue
+            ti.state = (animTheme == notch.currentAnimationTheme) ? .on : .off
+            animThemeMenu.addItem(ti)
+        }
+        animThemeItem.submenu = animThemeMenu
+        menu.addItem(animThemeItem)
+        self.animThemeMenu = animThemeMenu
 
         // License section
         let licenseItem = NSMenuItem(title: licenseMenuTitle(), action: #selector(activateLicense), keyEquivalent: "")
@@ -258,7 +276,7 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         // Only the custom-action items target self. The Quit item is intentionally left
         // targetless so terminate(_:) routes through the responder chain to NSApp — the app
         // runs as .accessory (no standard app menu / ⌘Q), so this menu is the only way to quit.
-        [demoItem, reinstallItem, uninstallItem, clearApprovalsItem, soundItem].forEach { $0.target = self }
+        [demoItem, reinstallItem, uninstallItem, clearApprovalsItem, soundItem, pixelArtItem].forEach { $0.target = self }
         item.menu = menu
         statusItem = item
     }
@@ -339,12 +357,23 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
     @objc private func toggleSound(_ item: NSMenuItem) {
         sound.enabled.toggle(); item.state = sound.enabled ? .on : .off
     }
+    @objc private func togglePixelArt(_ item: NSMenuItem) {
+        notch.togglePixelArt()
+        item.state = notch.isPixelArtEnabled ? .on : .off
+    }
     @objc private func selectTheme(_ sender: NSMenuItem) {
         guard let id = sender.representedObject as? String else { return }
         let theme = themeStore.select(id: id)
         notch.setPalette(theme.palette)
         // refresh checkmarks
         themeMenu?.items.forEach { $0.state = ($0.representedObject as? String == theme.id) ? .on : .off }
+    }
+    @objc private func selectAnimationTheme(_ sender: NSMenuItem) {
+        guard let raw = sender.representedObject as? String,
+              let theme = AnimationTheme(rawValue: raw) else { return }
+        notch.selectAnimationTheme(theme)
+        // refresh checkmarks
+        animThemeMenu?.items.forEach { $0.state = ($0.representedObject as? String == theme.rawValue) ? .on : .off }
     }
 
     public func applicationWillTerminate(_ notification: Notification) {

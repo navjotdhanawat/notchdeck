@@ -83,6 +83,12 @@ public final class NotchController {
     /// caller — `AppCoordinator` — lives in this same module.
     func setPalette(_ palette: Palette) { vm.palette = palette }
 
+    public var isPixelArtEnabled: Bool { vm.pixelArtEnabled }
+    public func togglePixelArt() { vm.togglePixelArt() }
+
+    public var currentAnimationTheme: AnimationTheme { vm.animationTheme }
+    public func selectAnimationTheme(_ theme: AnimationTheme) { vm.selectAnimationTheme(theme) }
+
     private func presentation(pending: [DecisionRequest], sessions: [Session]) -> Presentation {
         if !pending.isEmpty { return .expanded }
         if vm.notice != nil { return .expanded }   // keep the notch open so a transient notice (failed jump / TCC hint) stays readable

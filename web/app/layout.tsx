@@ -50,17 +50,18 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large", "max-video-preview": -1 },
   },
   alternates: {
-    canonical: "/",
+    canonical: "./",
   },
   openGraph: {
     type: "website",
-    url: "/",
+    locale: "en_US",
+    url: SITE_URL,
     siteName: "NotchDeck",
     title: TITLE,
     description: DESCRIPTION,
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.png?v=2",
         width: 1200,
         height: 630,
         alt: "NotchDeck — AI Agent Monitor for MacBook Notch",
@@ -73,15 +74,18 @@ export const metadata: Metadata = {
     creator: "@navjotdhanawat",
     title: TITLE,
     description: DESCRIPTION,
-    images: ["/og-image.png"],
+    images: ["/og-image.png?v=2"],
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.ico?v=2", sizes: "any" },
+      { url: "/icon.png?v=2", type: "image/png", sizes: "512x512" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
-    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png?v=2", sizes: "180x180" },
+      { url: "/apple-icon.png?v=2", sizes: "180x180" },
+    ],
+    shortcut: "/favicon.ico?v=2",
   },
   manifest: "/site.webmanifest",
 };

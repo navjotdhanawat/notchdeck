@@ -34,11 +34,11 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Long-lived cache for static assets
+      // Short-lived / revalidating cache for root favicon & brand icons so browsers pick up icon changes
       {
-        source: "/(.+\\.(?:ico|png|webmanifest|svg|woff2?))",
+        source: "/(favicon\\.ico|icon\\.png|apple-touch-icon\\.png|apple-icon\\.png|site\\.webmanifest|og-image\\.png)",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          { key: "Cache-Control", value: "public, max-age=86400, must-revalidate" },
         ],
       },
     ];

@@ -51,6 +51,8 @@ cat << 'EOF' > "${CONTENTS_DIR}/Info.plist"
     <string>1</string>
     <key>CFBundleIconFile</key>
     <string>NotchDeck</string>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>NotchDeck needs to control terminal applications using AppleScript to focus corresponding session windows.</string>
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
     <key>LSUIElement</key>

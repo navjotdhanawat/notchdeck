@@ -28,4 +28,10 @@ public final class UpdateManager: NSObject, SPUUpdaterDelegate {
     public var canCheckForUpdates: Bool {
         updaterController.updater.canCheckForUpdates
     }
+
+    /// Provide feed URL with cache-busting timestamp to prevent stale CDN cache issues.
+    public func feedURL(for updater: SPUUpdater) -> URL? {
+        let timestamp = Int(Date().timeIntervalSince1970)
+        return URL(string: "https://raw.githubusercontent.com/navjotdhanawat/notchdeck/main/appcast.xml?t=\(timestamp)")
+    }
 }

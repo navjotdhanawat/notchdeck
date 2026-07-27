@@ -9,10 +9,12 @@ let package = Package(
     ],
     targets: [
         .target(name: "NotchDeckCore"),
+        .target(name: "NotchDeckPro"),
         .executableTarget(
             name: "NotchDeckApp",
             dependencies: [
                 "NotchDeckCore",
+                "NotchDeckPro",
                 .product(name: "DynamicNotchKit", package: "DynamicNotchKit")
             ]
         ),

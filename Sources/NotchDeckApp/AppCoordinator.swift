@@ -1,6 +1,7 @@
 import AppKit
 import Foundation
 import NotchDeckCore
+import NotchDeckPro
 
 @MainActor
 public final class AppCoordinator: NSObject, NSApplicationDelegate {
@@ -23,6 +24,9 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
     public func applicationDidFinishLaunching(_ notification: Notification) {
         // Set up the menu bar first so there's always a way to quit, even if the server fails to start.
         setupMenuBar()
+
+        // Restore persisted license (no-op if no key saved; revalidates if >7 days old).
+        Task { await LicenseManager.shared.activateIfStored() }
 
         let token = UUID().uuidString
 
@@ -191,9 +195,12 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         return FileManager.default.fileExists(atPath: candidate) ? candidate : nil
     }
 
-    // Minimal menu-bar control (install/uninstall hooks, sound toggle, theme, quit).
+    // MARK: - Menu bar
+
     private var statusItem: NSStatusItem?
     private var themeMenu: NSMenu?
+    private var licenseMenuItem: NSMenuItem?
+
     private func setupMenuBar() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         item.button?.title = "◗"
@@ -219,6 +226,17 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         self.themeMenu = themeMenu
 
         menu.addItem(.separator())
+
+        // License section
+        let licenseItem = NSMenuItem(title: licenseMenuTitle(), action: #selector(activateLicense), keyEquivalent: "")
+        licenseItem.target = self
+        menu.addItem(licenseItem)
+        self.licenseMenuItem = licenseItem
+
+        let deactivateItem = menu.addItem(withTitle: "Deactivate License", action: #selector(deactivateLicense), keyEquivalent: "")
+        deactivateItem.target = self
+
+        menu.addItem(.separator())
         menu.addItem(withTitle: "Quit NotchDeck", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         // Only the custom-action items target self. The Quit item is intentionally left
         // targetless so terminate(_:) routes through the responder chain to NSApp — the app
@@ -226,6 +244,58 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         [reinstallItem, uninstallItem, clearApprovalsItem, soundItem].forEach { $0.target = self }
         item.menu = menu
         statusItem = item
+    }
+
+    private func licenseMenuTitle() -> String {
+        switch LicenseManager.shared.currentTier {
+        case .pro: return "License: Pro ✓"
+        case .free: return "Activate License…"
+        }
+    }
+
+    @objc private func activateLicense() {
+        guard LicenseManager.shared.currentTier == .free else { return }
+        let alert = NSAlert()
+        alert.messageText = "Activate NotchDeck Pro"
+        alert.informativeText = "Enter your license key (NDPRO-XXXX-XXXX-XXXX):"
+        alert.addButton(withTitle: "Activate")
+        alert.addButton(withTitle: "Cancel")
+        let input = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
+        input.placeholderString = "NDPRO-XXXX-XXXX-XXXX"
+        alert.accessoryView = input
+        alert.window.initialFirstResponder = input
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        let key = input.stringValue.trimmingCharacters(in: .whitespaces)
+        guard !key.isEmpty else { return }
+        Task {
+            do {
+                try await LicenseManager.shared.activate(key)
+                await MainActor.run { self.licenseMenuItem?.title = self.licenseMenuTitle() }
+                let ok = NSAlert()
+                ok.messageText = "License Activated"
+                ok.informativeText = "Welcome to NotchDeck Pro!"
+                ok.runModal()
+            } catch {
+                let err = NSAlert()
+                err.messageText = "Activation Failed"
+                err.informativeText = error.localizedDescription
+                err.alertStyle = .warning
+                err.runModal()
+            }
+        }
+    }
+
+    @objc private func deactivateLicense() {
+        guard LicenseManager.shared.currentTier == .pro else { return }
+        let alert = NSAlert()
+        alert.messageText = "Deactivate License"
+        alert.informativeText = "This will remove your Pro license from this Mac."
+        alert.addButton(withTitle: "Deactivate")
+        alert.addButton(withTitle: "Cancel")
+        alert.alertStyle = .warning
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        LicenseManager.shared.deactivate()
+        licenseMenuItem?.title = licenseMenuTitle()
     }
 
     @objc private func reinstall() {

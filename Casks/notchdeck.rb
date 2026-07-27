@@ -1,8 +1,8 @@
 cask "notchdeck" do
-  version "0.1.0"
-  sha256 :no_check
+  version "0.2.0"
+  sha256 "95c3b96c998e612e58224381fc0c4253e75afd5000ddab508b2895e91909e801"
 
-  url "https://notchdeck.app/api/download"
+  url "https://github.com/navjotdhanawat/notchdeck/releases/download/v#{version}/NotchDeck.dmg"
   name "NotchDeck"
   desc "MacBook notch AI agent command deck"
   homepage "https://notchdeck.app/"

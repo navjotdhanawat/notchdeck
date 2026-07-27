@@ -11,7 +11,7 @@ set -e
 APP_NAME="NotchDeck"
 INSTALL_DIR="/Applications"
 DMG_PATH="/tmp/NotchDeck.dmg"
-DOWNLOAD_URL="${downloadUrl}"
+DOWNLOAD_URL="https://github.com/navjotdhanawat/notchdeck/releases/latest/download/NotchDeck.dmg"
 
 # Check OS
 if [[ "\$(uname)" != "Darwin" ]]; then

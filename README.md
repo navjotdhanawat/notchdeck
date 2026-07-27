@@ -13,7 +13,7 @@ Monitor multiple AI coding agents at a glance — click to jump to any session i
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/navjotdhanawat)
 
 <br /><br />
-<img src="docs/screenshots/notch-overview.png" alt="NotchDeck showing multiple agent sessions in the notch" width="750" />
+<img src="docs/screenshots/NotchDeckLandscape.gif" alt="NotchDeck live demo" width="750" />
 
 </div>
 
@@ -84,7 +84,22 @@ Running 4 parallel Claude Code sessions? Spinning up a Codex CLI job while Claud
 
 ### Install
 
-> 📦 Pre-built `.dmg` coming soon. Build from source in the meantime:
+**Option A — Download DMG (easiest)**
+
+1. Download `NotchDeck.dmg` from the [Releases page](https://github.com/navjotdhanawat/notchdeck/releases)
+2. Open the `.dmg` and drag **NotchDeck.app** to `/Applications`
+3. Launch NotchDeck
+
+> **macOS Gatekeeper note:** NotchDeck is not yet signed with an Apple Developer certificate, so macOS will block it on first launch with *"NotchDeck can't be opened because it is from an unidentified developer."*
+>
+> To open it anyway:
+> 1. In **Finder**, right-click (or Control-click) **NotchDeck.app** → **Open**
+> 2. Click **Open** in the dialog that appears
+>
+> You only need to do this once. After that, it launches normally.
+> Alternatively: **System Settings → Privacy & Security → scroll down → click "Open Anyway"**
+
+**Option B — Build from source**
 
 ```bash
 git clone https://github.com/navjotdhanawat/notchdeck.git
@@ -120,23 +135,43 @@ See [docs/architecture.md](docs/architecture.md) for the full technical breakdow
 
 ## 🗺️ Roadmap
 
-**v1 — Core (current)**
+**v1 — Core (current — open source, free)**
 - [x] Claude Code support
 - [x] Codex CLI support
 - [x] iTerm2, WezTerm, Kitty jump support
 - [x] Cost & token tracking
-- [x] Themes
+- [x] Themes (3 included free)
 
-**v2 — Act in Place**
-- [ ] Approve / deny permissions directly from the notch
-- [ ] Answer prompts inline (no terminal switch needed)
+**v2 — Act in Place** *(planned · Pro)*
+- [ ] Approve / deny permissions directly from the notch — no terminal switch
+- [ ] Answer prompts inline
 - [ ] Remembered decisions per project
 
-**v3 & Beyond**
+**v3 & Beyond** *(planned · Pro)*
 - [ ] Gemini CLI, Aider, Cursor agents
 - [ ] Ghostty precise jump
 - [ ] SSH remote session relay
+- [ ] Session history & replay
 - [ ] Mobile companion app
+
+---
+
+## 💎 Free vs Pro
+
+NotchDeck's core is **open source and free forever** (MIT). Pro unlocks power-user features once they ship.
+
+| Feature | Free | Pro |
+|---------|------|-----|
+| Agent sessions | Up to 3 | Unlimited |
+| Claude Code & Codex CLI | ✅ | ✅ |
+| Click-to-jump terminal focus | ✅ | ✅ |
+| Cost & token tracking | ✅ | ✅ |
+| Themes | 3 | All (+ custom) |
+| Act-in-place decisions | — | ✅ *(v2)* |
+| Session history | — | ✅ *(v3)* |
+| Priority support | — | ✅ |
+
+**Pro pricing:** $9/month · $79/year — [join the waitlist](https://notchdeck.vercel.app) to get notified at launch.
 
 ---
 

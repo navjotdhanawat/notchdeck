@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>NotchDeck Changelog</title>
+        <link>https://github.com/navjotdhanawat/notchdeck</link>
+        <description>Most recent updates for NotchDeck macOS app.</description>
+        <language>en</language>
+        <item>
+            <title>Version 0.1.0</title>
+            <pubDate>Mon, 27 Jul 2026 12:00:00 +0000</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure
+                url="https://github.com/navjotdhanawat/notchdeck/releases/download/v0.1.0/NotchDeck.dmg"
+                sparkle:version="1"
+                sparkle:shortVersionString="0.1.0"
+                type="application/octet-stream" />
+        </item>
+    </channel>
+</rss>

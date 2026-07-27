@@ -25,6 +25,9 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         // Set up the menu bar first so there's always a way to quit, even if the server fails to start.
         setupMenuBar()
 
+        // Initialize auto-updater
+        _ = UpdateManager.shared
+
         // Restore persisted license (no-op if no key saved; revalidates if >7 days old).
         Task { await LicenseManager.shared.activateIfStored() }
 
@@ -225,8 +228,6 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         menu.addItem(themeItem)
         self.themeMenu = themeMenu
 
-        menu.addItem(.separator())
-
         // License section
         let licenseItem = NSMenuItem(title: licenseMenuTitle(), action: #selector(activateLicense), keyEquivalent: "")
         licenseItem.target = self
@@ -237,6 +238,12 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         deactivateItem.target = self
 
         menu.addItem(.separator())
+
+        // Updates section
+        let updateItem = menu.addItem(withTitle: "Check for Updates…", action: #selector(checkForUpdates), keyEquivalent: "")
+        updateItem.target = self
+
+        menu.addItem(.separator())
         menu.addItem(withTitle: "Quit NotchDeck", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         // Only the custom-action items target self. The Quit item is intentionally left
         // targetless so terminate(_:) routes through the responder chain to NSApp — the app
@@ -244,6 +251,10 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
         [reinstallItem, uninstallItem, clearApprovalsItem, soundItem].forEach { $0.target = self }
         item.menu = menu
         statusItem = item
+    }
+
+    @objc private func checkForUpdates() {
+        UpdateManager.shared.checkForUpdates(self)
     }
 
     private func licenseMenuTitle() -> String {

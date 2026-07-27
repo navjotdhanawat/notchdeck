@@ -5,7 +5,8 @@ let package = Package(
     name: "NotchDeck",
     platforms: [.macOS(.v14)],
     dependencies: [
-        .package(url: "https://github.com/MrKai77/DynamicNotchKit.git", from: "1.0.0")
+        .package(url: "https://github.com/MrKai77/DynamicNotchKit.git", from: "1.0.0"),
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.6.0")
     ],
     targets: [
         .target(name: "NotchDeckCore"),
@@ -15,7 +16,8 @@ let package = Package(
             dependencies: [
                 "NotchDeckCore",
                 "NotchDeckPro",
-                .product(name: "DynamicNotchKit", package: "DynamicNotchKit")
+                .product(name: "DynamicNotchKit", package: "DynamicNotchKit"),
+                .product(name: "Sparkle", package: "Sparkle")
             ]
         ),
         .executableTarget(name: "notch-bridge", dependencies: ["NotchDeckCore"]),

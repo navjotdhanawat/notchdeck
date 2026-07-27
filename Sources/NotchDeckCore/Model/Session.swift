@@ -29,4 +29,34 @@ public struct Session: Identifiable, Sendable, Equatable {
         }
         return "session"
     }
+
+    public init(
+        key: String,
+        agentID: String,
+        agentSessionID: String,
+        terminal: TerminalIdentity,
+        cwd: String,
+        title: String? = nil,
+        state: SessionState,
+        currentTool: String? = nil,
+        currentAction: String? = nil,
+        stateSince: Date,
+        usage: SessionUsage? = nil,
+        startedAt: Date,
+        lastEventAt: Date
+    ) {
+        self.key = key
+        self.agentID = agentID
+        self.agentSessionID = agentSessionID
+        self.terminal = terminal
+        self.cwd = cwd
+        self.title = title
+        self.state = state
+        self.currentTool = currentTool
+        self.currentAction = currentAction
+        self.stateSince = stateSince
+        self.usage = usage
+        self.startedAt = startedAt
+        self.lastEventAt = lastEventAt
+    }
 }

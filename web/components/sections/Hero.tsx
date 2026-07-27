@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/Button";
 import { Stage } from "@/components/stage/Stage";
 
-export function Hero() {
+export function Hero({ onDownloadClick }: { onDownloadClick: () => void }) {
   return (
     <section className="mx-auto w-full max-w-[1120px] px-6 pb-24 pt-20 sm:pt-28">
       {/* masthead */}
@@ -30,13 +30,13 @@ export function Hero() {
       </p>
 
       <p className="mt-3 text-[13px] text-text-secondary">
-        Free in v1 ·{" "}
-        <span className="text-text-primary">no trial, no card, no catch</span>
+        Free &amp; open source ·{" "}
+        <span className="text-text-primary">no trial, no telemetry, no cloud</span>
       </p>
 
       {/* CTAs */}
       <div className="mt-8 flex flex-wrap items-center gap-3">
-        <Button variant="primary" href="#download">
+        <Button variant="primary" onClick={onDownloadClick}>
           Download for macOS
         </Button>
         <Button variant="ghost" href="#act">

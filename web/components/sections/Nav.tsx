@@ -1,7 +1,7 @@
 // Sticky top nav: wordmark (serif "Notch" in accent), in-page links, and a small
 // Download CTA. Pure CSS sticky; condenses gracefully on narrow screens.
 
-export function Nav() {
+export function Nav({ onDownloadClick }: { onDownloadClick: () => void }) {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/[0.04] bg-surface-top/70 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex h-16 max-w-[1120px] items-center justify-between gap-6 px-6">
@@ -19,17 +19,18 @@ export function Nav() {
           <NavLink href="#features">Features</NavLink>
           <NavLink href="#act">Act in place</NavLink>
           <NavLink href="#themes">Themes</NavLink>
-          <NavLink href="#pricing">Pricing</NavLink>
+          <NavLink href="#support">Support</NavLink>
           <NavLink href="#roadmap">Roadmap</NavLink>
         </div>
 
         {/* Download CTA */}
-        <a
-          href="#download"
-          className="shrink-0 rounded-full border border-border-c px-4 py-1.5 text-[13px] font-medium text-text-primary transition-[transform,border-color,background-color] duration-200 hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.06] active:translate-y-0"
+        <button
+          onClick={onDownloadClick}
+          type="button"
+          className="shrink-0 rounded-full border border-border-c px-4 py-1.5 text-[13px] font-medium text-text-primary transition-[transform,border-color,background-color] duration-200 hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.06] active:translate-y-0 cursor-pointer"
         >
           Download
-        </a>
+        </button>
       </div>
     </nav>
   );

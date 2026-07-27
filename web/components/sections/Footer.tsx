@@ -40,14 +40,22 @@ export function Footer() {
             >
               GitHub
             </a>
-            <a href="#pricing" className="transition-colors hover:text-text-primary">
-              Pricing
+            <a
+              href="https://buymeacoffee.com/navjotdhanawat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-text-primary"
+            >
+              Sponsor
+            </a>
+            <a href="#support" className="transition-colors hover:text-text-primary">
+              Support
             </a>
             <a
               href="mailto:nav@notchdeck.com"
               className="transition-colors hover:text-text-primary"
             >
-              Support
+              Contact
             </a>
           </div>
         </div>

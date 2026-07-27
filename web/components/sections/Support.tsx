@@ -31,37 +31,36 @@ function Feature({ children }: { children: string }) {
   );
 }
 
-export function Pricing() {
+export function Support({ onDownloadClick }: { onDownloadClick: () => void }) {
   return (
-    <Section id="pricing" num="07" title="Simple pricing">
-      <div className="grid gap-5 md:grid-cols-2 max-w-[720px] mx-auto">
+    <Section id="support" num="07" title="Support & Open Source">
+      <div className="grid gap-5 md:grid-cols-2 max-w-[760px] mx-auto items-stretch">
 
-        {/* --- Free (v1) --- */}
+        {/* --- Free (MIT) --- */}
         <div className="flex flex-col gap-6 rounded-xl border border-accent/40 bg-surface-top p-6 shadow-[0_0_40px_-12px_var(--accent)]">
-          <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border border-accent/30 bg-accent px-3 py-0.5 font-mono text-[10px] uppercase tracking-wider text-on-accent hidden" />
           <div>
             <p className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
-              Free · v1
+              Free · MIT License
             </p>
             <p className="mt-2 font-serif text-4xl font-normal text-text-primary">
               $0
             </p>
             <p className="mt-1 text-[13px] text-text-secondary">
-              Everything, forever · no card, no trial, no catch
+              Everything in NotchDeck is 100% free and locally run
             </p>
           </div>
 
-          <ul className="flex flex-col gap-3">
-            <Feature>All current features unlocked</Feature>
-            <Feature>Claude Code + Codex + all agents</Feature>
-            <Feature>Act-in-place decisions</Feature>
-            <Feature>Cost tracking &amp; 10 themes</Feature>
-            <Feature>Session history</Feature>
+          <ul className="flex flex-col gap-3 flex-1">
+            <Feature>All features unlocked</Feature>
+            <Feature>Claude Code, Codex, Aider &amp; Gemini</Feature>
+            <Feature>Act-in-place decisions in the notch</Feature>
+            <Feature>Cost tracking &amp; 10+ themes</Feature>
+            <Feature>Session history &amp; local-only logs</Feature>
             <Feature>No telemetry · fully local</Feature>
           </ul>
 
-          <div className="mt-auto">
-            <Button variant="primary" href="#download" className="w-full text-[13px]">
+          <div>
+            <Button variant="primary" onClick={onDownloadClick} className="w-full text-[13px]">
               Download for macOS
             </Button>
             <p className="mt-2 text-center text-[11px] text-text-secondary">
@@ -70,66 +69,60 @@ export function Pricing() {
           </div>
         </div>
 
-        {/* --- Pro (coming soon) --- */}
+        {/* --- Sponsor (Buy Me a Coffee) --- */}
         <div className="flex flex-col gap-6 rounded-xl border border-border-c bg-surface-top p-6">
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
-                Pro
+              <p className="font-mono text-[11px] uppercase tracking-wider text-accent">
+                Sponsor
               </p>
-              <span className="rounded-md bg-surface-raised px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-text-secondary">
-                Coming soon
+              <span className="rounded-md bg-white/[0.06] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-text-secondary">
+                Keep updates coming
               </span>
             </div>
             <p className="mt-2 font-serif text-4xl font-normal text-text-primary">
-              TBD
+              Support
             </p>
             <p className="mt-1 text-[13px] text-text-secondary">
-              Early supporters get it free — see below
+              Help cover code-signing certificates and active engineering hours
             </p>
           </div>
 
-          <ul className="flex flex-col gap-3">
-            <Feature>Everything in Free</Feature>
-            <Feature>SSH remote agent monitoring</Feature>
-            <Feature>Team seats &amp; shared sessions</Feature>
-            <Feature>Mobile relay (phone notifications)</Feature>
-            <Feature>Priority support</Feature>
-            <Feature>All future major version updates</Feature>
+          <ul className="flex flex-col gap-3 flex-1">
+            <Feature>Covers Apple Developer Program fees ($99/yr) for official codesigning</Feature>
+            <Feature>Offsets server, updating infrastructure, and API testing costs</Feature>
+            <Feature>Keeps NotchDeck completely independent of VCs, tracking, and Ads</Feature>
+            <Feature>Supports active maintenance to keep client terminal hooks stable</Feature>
           </ul>
 
-          <div className="mt-auto">
-            <Button variant="ghost" href="#waitlist" className="w-full text-[13px]">
-              Join waitlist
+          <div>
+            <Button
+              variant="ghost"
+              href="https://buymeacoffee.com/navjotdhanawat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full text-[13px]"
+            >
+              Buy me a coffee
             </Button>
             <p className="mt-2 text-center text-[11px] text-text-secondary">
-              Get notified when Pro launches
+              One-time or variable contribution
             </p>
           </div>
         </div>
       </div>
 
-      {/* Giveaway banner */}
+      {/* Share/Promo banner */}
       <div className="mt-5 flex flex-col items-center justify-between gap-4 rounded-xl border border-border-c bg-surface-top px-6 py-5 sm:flex-row">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
-            Get Pro free
+            Spread the word
           </p>
           <p className="mt-1 text-[15px] font-semibold text-text-primary">
-            Post NotchDeck on{" "}
-            <span className="text-accent">𝕏 (Twitter)</span> and get 100+ likes
+            Help us share <span className="text-accent">NotchDeck</span>
           </p>
           <p className="mt-0.5 text-[13px] text-text-secondary">
-            DM{" "}
-            <a
-              href="https://x.com/navjotdhanawat"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-text-primary underline underline-offset-2 hover:text-accent transition-colors"
-            >
-              @navjotdhanawat
-            </a>{" "}
-            with a link to your post — we&apos;ll send you a Pro key manually.
+            If you like the app, consider posting your experience on 𝕏 (Twitter) or GitHub to help more developers find it.
           </p>
         </div>
         <a
@@ -143,7 +136,7 @@ export function Pricing() {
       </div>
 
       <p className="mt-6 text-center text-[12px] text-text-secondary">
-        v1 is fully free · paid Pro comes later · no bait-and-switch
+        NotchDeck is fully local, private, and open-source under the MIT license
       </p>
     </Section>
   );

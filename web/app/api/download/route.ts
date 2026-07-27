@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 // Default repository to fetch from
@@ -15,7 +15,7 @@ interface GitHubReleaseResponse {
   assets?: GitHubAsset[];
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   if (!GITHUB_TOKEN) {
     return NextResponse.json({ error: "GITHUB_TOKEN is not configured" }, { status: 503 });
   }
@@ -49,6 +49,17 @@ export async function GET() {
       return NextResponse.json({ error: "NotchDeck.dmg not found in latest release" }, { status: 404 });
     }
 
+    const headers = {
+      "Content-Type": "application/octet-stream",
+      "Content-Disposition": 'attachment; filename="NotchDeck.dmg"',
+      "Cache-Control": "no-store",
+    };
+
+    // If it's a HEAD request (common for status checks), don't fetch the body
+    if (req.method === "HEAD") {
+      return new NextResponse(null, { status: 200, headers });
+    }
+
     // 3. Request the raw asset binary using the asset API URL
     const assetRes = await fetch(dmgAsset.url, {
       headers: {
@@ -61,20 +72,21 @@ export async function GET() {
     if (!assetRes.ok) {
       return NextResponse.json(
         { error: `failed to download asset: ${assetRes.statusText}` },
-        { status: 502 }
-      );
-    }
+      { status: 502 }
+    );
+  }
 
     // 4. Return the stream response
     return new NextResponse(assetRes.body, {
       status: 200,
-      headers: {
-        "Content-Type": "application/octet-stream",
-        "Content-Disposition": 'attachment; filename="NotchDeck.dmg"',
-        "Cache-Control": "no-store",
-      },
+      headers,
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || "internal server error" }, { status: 500 });
   }
+}
+
+// Support HEAD requests explicitly
+export async function HEAD(req: NextRequest) {
+  return GET(req);
 }

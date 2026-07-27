@@ -14,12 +14,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Make package script executable
         run: chmod +x scripts/package.sh
 
       - name: Build and Package App
-        run: ./scripts/package.sh
+        run: ./scripts/package.sh "${{ github.ref_name }}"
 
       - name: Upload DMG to release
         uses: softprops/action-gh-release@v2

@@ -1,6 +1,6 @@
 cask "notchdeck" do
-  version "0.2.0"
-  sha256 "95c3b96c998e612e58224381fc0c4253e75afd5000ddab508b2895e91909e801"
+  version "0.3.0"
+  sha256 "60a91256afff997c6ba59cf2944a7cab3e9ea74706bf9028a95a94106558ccbf"
 
   url "https://github.com/navjotdhanawat/notchdeck/releases/download/v#{version}/NotchDeck.dmg"
   name "NotchDeck"

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Section } from "@/components/ui/Section";
+import { trackWaitlistSubmit, trackOutboundClick } from "@/lib/analytics";
 
 async function submitWaitlist(email: string, source: string): Promise<{ ok: boolean; already?: boolean }> {
   const res = await fetch("/api/waitlist", {
@@ -22,9 +23,12 @@ function EmailForm({ source, placeholder = "you@example.com" }: { source: string
     setState("loading");
     try {
       const res = await submitWaitlist(email, source);
-      setState(res.already ? "already" : "done");
+      const status = res.already ? "already" : "done";
+      setState(status);
+      trackWaitlistSubmit(source, res.already ? "already" : "success");
     } catch {
       setState("idle");
+      trackWaitlistSubmit(source, "error");
     }
   }
 
@@ -83,6 +87,7 @@ export function Waitlist() {
             href="https://buymeacoffee.com/navjotdhanawat"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackOutboundClick("sponsor", "waitlist_section")}
             className="text-text-secondary underline underline-offset-2 hover:text-accent transition-colors"
           >
             Buy Me a Coffee
@@ -92,6 +97,7 @@ export function Waitlist() {
             href="https://github.com/navjotdhanawat/notchdeck"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackOutboundClick("github", "waitlist_section")}
             className="text-text-secondary underline underline-offset-2 hover:text-accent transition-colors"
           >
             GitHub

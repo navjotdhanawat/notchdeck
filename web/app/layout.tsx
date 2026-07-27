@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ThemeScript } from "@/lib/theme-script";
 import "./globals.css";
@@ -138,7 +139,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body><ThemeProvider>{children}</ThemeProvider></body>
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
+      </body>
     </html>
   );
 }

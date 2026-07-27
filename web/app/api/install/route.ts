@@ -37,7 +37,7 @@ fi
 
 echo ""
 echo "  Mounting disk image..."
-MOUNT_POINT=\$(hdiutil attach "\${DMG_PATH}" -nobrowse -quiet | tail -1 | awk '{print \$NF}')
+MOUNT_POINT=\$(hdiutil attach "\${DMG_PATH}" -nobrowse | grep -o '/Volumes/.*' | head -n 1)
 
 if [ -z "\${MOUNT_POINT}" ] || [ ! -d "\${MOUNT_POINT}/\${APP_NAME}.app" ]; then
   echo "Error: Failed to mount disk image."

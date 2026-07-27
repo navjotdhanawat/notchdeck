@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export const runtime = "edge";
 
@@ -42,11 +42,9 @@ echo ""
 `;
 }
 
-export async function GET(req: NextRequest) {
-  // Determine the correct host dynamically
-  const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || "notchdeck.app";
-  const proto = req.headers.get("x-forwarded-proto") || "https";
-  const downloadUrl = `${proto}://${host}/api/download`;
+export async function GET(_req: NextRequest) {
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://notchdeck.app";
+  const downloadUrl = `${base}/api/download`;
 
   return new NextResponse(getScript(downloadUrl), {
     headers: {

@@ -4,11 +4,45 @@ import AppKit
 /// Small helpers for CLI-driven terminal jumpers: resolve a binary, run it with a
 /// timeout, and raise an app. Keeps WezTerm/Kitty adapters focused on their command.
 enum TerminalShell {
-    /// GUI apps get a minimal PATH, so search common install dirs explicitly.
+    /// GUI apps get a minimal PATH, so construct a comprehensive search path containing
+    /// common install locations for homebrew, npm, yarn, volta, pnpm, fnm, and asdf.
+    static func searchPaths() -> [String] {
+        let home = NSHomeDirectory()
+        var dirs = [
+            "/opt/homebrew/bin",
+            "/opt/homebrew/sbin",
+            "/usr/local/bin",
+            "\(home)/.local/bin",
+            "\(home)/.npm-global/bin",
+            "\(home)/Library/pnpm",
+            "\(home)/.local/share/pnpm",
+            "\(home)/.yarn/bin",
+            "\(home)/.volta/bin",
+            "\(home)/.fnm/bin",
+            "\(home)/.local/share/fnm/shims",
+            "\(home)/.local/share/fnm/aliases/default/bin",
+            "\(home)/.asdf/shims",
+            "\(home)/.asdf/installs/nodejs/bin",
+            "/usr/bin",
+            "/bin"
+        ]
+
+        let nvmNodeDir = URL(fileURLWithPath: "\(home)/.nvm/versions/node")
+        if let contents = try? FileManager.default.contentsOfDirectory(at: nvmNodeDir, includingPropertiesForKeys: nil) {
+            for subDir in contents {
+                dirs.append(subDir.appendingPathComponent("bin").path)
+            }
+        }
+
+        if let envPath = ProcessInfo.processInfo.environment["PATH"] {
+            dirs.append(contentsOf: envPath.split(separator: ":").map(String.init))
+        }
+
+        return dirs
+    }
+
     static func resolve(_ name: String) -> String? {
-        let dirs = ["/opt/homebrew/bin", "/usr/local/bin",
-                    "\(NSHomeDirectory())/.local/bin", "/usr/bin", "/bin"]
-        for d in dirs {
+        for d in searchPaths() {
             let p = "\(d)/\(name)"
             if FileManager.default.isExecutableFile(atPath: p) { return p }
         }

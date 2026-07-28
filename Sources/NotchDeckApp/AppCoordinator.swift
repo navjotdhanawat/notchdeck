@@ -163,8 +163,21 @@ public final class AppCoordinator: NSObject, NSApplicationDelegate {
     private func decisionsEnabled(for gate: VersionGate?) -> Bool {
         guard let gate else { return true }
         let p = Process()
-        p.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        p.arguments = [gate.binary, "--version"]
+
+        var env = ProcessInfo.processInfo.environment
+        let existingPath = env["PATH"] ?? ""
+        let customPaths = TerminalShell.searchPaths()
+        env["PATH"] = (customPaths + [existingPath]).filter { !$0.isEmpty }.joined(separator: ":")
+        p.environment = env
+
+        if let binaryPath = TerminalShell.resolve(gate.binary) {
+            p.executableURL = URL(fileURLWithPath: binaryPath)
+            p.arguments = ["--version"]
+        } else {
+            p.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            p.arguments = [gate.binary, "--version"]
+        }
+
         let pipe = Pipe()
         p.standardOutput = pipe
         p.standardError = Pipe()

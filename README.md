@@ -13,7 +13,7 @@ Monitor multiple AI coding agents at a glance — click to jump to any session i
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/navjotdhanawat)
 
 <br /><br />
-<img src="docs/screenshots/NotchDeckLandscape.gif" alt="NotchDeck live demo" width="750" />
+<img src="docs/screenshots/banner.png" alt="NotchDeck live demo" width="750" />
 
 </div>
 
@@ -43,11 +43,22 @@ Running 4 parallel Claude Code sessions? Spinning up a Codex CLI job while Claud
 
 ## 📸 Screenshots
 
-### Multi-session Command Deck (Expanded notch view)
-<img src="docs/screenshots/notch-overview.png" alt="NotchDeck multi-session monitoring" width="800" />
+### Multi-Session Command Deck (Expanded notch view)
+<img src="docs/screenshots/banner.png" alt="NotchDeck multi-session monitoring" width="800" />
 
-### In-Notch Decision Workflows (Permission Gates, Prompt Questions, Task Plans)
-<img src="docs/screenshots/card-states.png" alt="NotchDeck workflow steps: Permission, Ask, Plan" width="800" />
+### In-Notch Decision Workflows
+
+#### 📋 Action/Task Plans Gate
+Inspect progress and approve execution plans directly from your MacBook notch.
+<img src="docs/screenshots/plan-gate.png" alt="Task plans gate" width="800" />
+
+#### ❓ Prompt Questions & Clarifications Gate
+Clarify details or select configuration details from options with single/multi-choice selects.
+<img src="docs/screenshots/ask-gate.png" alt="Prompt questions gate" width="800" />
+
+#### 🔒 Permission Gate
+Approve, deny, or grant temporary access for file changes and tool usage with interactive color-coded diff overlays.
+<img src="docs/screenshots/permission-gate.png" alt="Permission Gate" width="800" />
 
 ---
 

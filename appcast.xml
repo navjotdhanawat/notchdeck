@@ -6,6 +6,18 @@
         <description>Most recent updates for NotchDeck macOS app.</description>
         <language>en</language>
         <item>
+            <title>Version 0.3.1 - Fix version gate binary path resolution in GUI environments</title>
+            <pubDate>Tue, 28 Jul 2026 17:35:00 +0000</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure
+                url="https://github.com/navjotdhanawat/notchdeck/releases/download/v0.3.1/NotchDeck.dmg"
+                sparkle:version="60"
+                sparkle:shortVersionString="0.3.1"
+                sparkle:edSignature="GfRZ3KslVzlZL+Nv9x1j3vkeQrCW4whXukWFhdpNQxIzAeTiL/7jkgOEAww6P92+NyIkpXzlUvV9awJw3pF5Bg=="
+                length="3536372"
+                type="application/octet-stream" />
+        </item>
+        <item>
             <title>Version 0.3.0 - Retro animations, audio, and token diagnostics</title>
             <pubDate>Mon, 27 Jul 2026 22:28:43 +0000</pubDate>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
